@@ -1,0 +1,35 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "question": "What is LangChain?",
+      "expected_answer": "LangChain is a framework for developing applications powered by language models.",
+      "category": "basic"
+    },
+    {
+      "id": 2,
+      "question": "How do you create a simple chain in LangChain?",
+      "expected_answer": "You can create a chain by combining a prompt template with an LLM using LLMChain or the newer LCEL syntax.",
+      "category": "implementation"
+    },
+    {
+      "id": 3,
+      "question": "What are the main components of a RAG system?",
+      "expected_answer": "The main components are: document loading, text splitting, embeddings, vector store, retrieval, and generation.",
+      "category": "architecture"
+    },
+    {
+      "id": 4,
+      "question": "What is a vector store in LangChain?",
+      "expected_answer": "A vector store is a database that stores and retrieves document embeddings for similarity search.",
+      "category": "basic"
+    },
+    {
+      "id": 5,
+      "question": "How do you split documents in LangChain?",
+      "expected_answer": "LangChain provides various text splitters like RecursiveCharacterTextSplitter, CharacterTextSplitter, and others for splitting documents.",
+      "category": "implementation"
+    }
+  ],
+  "notes": "TODO: Add more questions specific to your documentation. These are just examples to get started."
+}
