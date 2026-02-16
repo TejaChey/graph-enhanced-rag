@@ -3,14 +3,14 @@ __pycache__/
 *$py.class
 *.so
 .Python
-venv/
+*venv/
 env/
 ENV/
 *.egg-info/
 dist/
 build/
 
-.env
+.env*
 .venv
 *.un~
 .md

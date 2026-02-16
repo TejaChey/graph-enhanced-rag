@@ -1,6 +1,6 @@
-from typing import List
+import re
 
-from langchain.schema import Document
+from langchain_core.documents import Document
 
 from src.utils import setup_logger
 
@@ -8,27 +8,32 @@ logger = setup_logger(__name__)
 
 
 class TextCleaner:
-    @staticmethod
-    def remove_extra_whitespace(text: str) -> str:
-        # TODO: Remove multiple spaces, tabs, newlines
+    def remove_extra_whitespace(self, text: str) -> str:
+        text = re.sub(r' +', ' ', text)
+        text = re.sub(r'\n\n+', '\n\n', text)
+        text = text.strip()
         return text
 
-    @staticmethod
-    def remove_special_characters(text: str, keep_chars: str = "") -> str:
-        # TODO: Remove unwanted special characters
-        return text
+    def remove_special_characters(self, text: str, keep_chars: str = "") -> str:
+        pattern = f'[^a-zA-Z0-9\\s{re.escape(keep_chars)}]'
+        cleaned = re.sub(pattern, '', text)
+        return cleaned
 
-    @staticmethod
-    def clean_document(document: Document) -> Document:
-        # TODO: Implement document cleaning
-        return document
+    def clean_document(self, document: Document) -> Document:
+        cleaned_content = self.remove_extra_whitespace(document.page_content)
+        cleaned_content = self.remove_special_characters(cleaned_content)
 
-    @staticmethod
-    def clean_documents(documents: List[Document]) -> List[Document]:
+        cleaned_doc = Document(
+            page_content=cleaned_content,
+            metadata=document.metadata
+        )
+
+        return cleaned_doc
+
+    def clean_documents(self, documents: list[Document]) -> list[Document]:
         logger.info(f"Cleaning {len(documents)} documents...")
 
-        # TODO: Implement batch cleaning
-        cleaned = documents  # Replace with actual cleaning
+        cleaned = [self.clean_document(doc) for doc in documents]
 
         logger.info(f"Cleaned {len(cleaned)} documents")
         return cleaned

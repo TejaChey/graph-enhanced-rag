@@ -1,7 +1,5 @@
-from typing import List
-
-from langchain.schema import Document
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_core.documents import Document
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from config import settings
 from src.utils import setup_logger
@@ -12,44 +10,36 @@ logger = setup_logger(__name__)
 class DocumentChunker:
     def __init__(
         self,
-        chunk_size: int,
-        chunk_overlap: int
+        chunk_size: int = settings.CHUNK_SIZE,
+        chunk_overlap: int = settings.CHUNK_OVERLAP
     ):
-        self.chunk_size = chunk_size or settings.CHUNK_SIZE
-        self.chunk_overlap = chunk_overlap or settings.CHUNK_OVERLAP
+        self.chunk_size: int = chunk_size
+        self.chunk_overlap: int = chunk_overlap
 
         logger.info(
-            f"DocumentChunker initialized: "
+            "DocumentChunker initialized: ",
             f"chunk_size={self.chunk_size}, overlap={self.chunk_overlap}"
         )
 
-        # TODO: Initialize the text splitter
-        self.text_splitter = None
+        self.text_splitter: RecursiveCharacterTextSplitter = RecursiveCharacterTextSplitter(
+            chunk_size=self.chunk_size,
+            chunk_overlap=self.chunk_overlap,
+        )
 
-    def chunk_documents(self, documents: List[Document]) -> List[Document]:
+    def chunk_documents(self, documents: list[Document]) -> list[Document]:
         logger.info(f"Chunking {len(documents)} documents...")
+        chunks = self.text_splitter.split_documents(documents)
+        logger.info(f"Created {len(chunks)} chunks")
+        return chunks
 
-        # TODO: Implement chunking
-        # Example structure:
-        # if not self.text_splitter:
-        #     self.text_splitter = RecursiveCharacterTextSplitter(
-        #         chunk_size=self.chunk_size,
-        #         chunk_overlap=self.chunk_overlap,
-        #         length_function=len,
-        #     )
-        # chunks = self.text_splitter.split_documents(documents)
-        # logger.info(f"Created {len(chunks)} chunks")
-        # return chunks
+    def get_chunk_statistics(self, chunks: list[Document]) -> dict[str,int]:
+        chunk_sizes = [len(chunk.page_content) for chunk in chunks]
 
-        raise NotImplementedError("TODO: Implement document chunking")
-
-    def get_chunk_statistics(self, chunks: List[Document]) -> dict:
-        # TODO: Implement statistics calculation
         return {
             "total_chunks": len(chunks),
-            "avg_chunk_size": 0,
-            "min_chunk_size": 0,
-            "max_chunk_size": 0
+            "avg_chunk_size": round(sum(chunk_sizes) / len(chunk_sizes)),
+            "min_chunk_size": max(chunk_sizes),
+            "max_chunk_size": min(chunk_sizes),
         }
 
 

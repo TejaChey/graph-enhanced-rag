@@ -1,14 +1,11 @@
 from pathlib import Path
-from typing import Optional
 
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    """Application settings"""
-
     # Project paths
-    PROJECT_ROOT: Path = Path(__file__).parent.parent
+    PROJECT_ROOT: Path = Path(__file__).resolve().parent.parent
     DATA_DIR: Path = PROJECT_ROOT / "data"
     RAW_DATA_DIR: Path = DATA_DIR / "raw"
     PROCESSED_DATA_DIR: Path = DATA_DIR / "processed"
@@ -37,25 +34,25 @@ class Settings(BaseSettings):
 
     # Retrieval Configuration
     RETRIEVAL_TOP_K: int = 4
-    RETRIEVAL_SCORE_THRESHOLD: Optional[float] = None  # Minimum similarity score
+    RETRIEVAL_SCORE_THRESHOLD: float | None = None  # Minimum similarity score
 
     # Graph Configuration
     GRAPH_ENABLED: bool = False
     GRAPH_BACKEND: str = "networkx"  # or "neo4j"
-    NEO4J_URI: Optional[str] = None
-    NEO4J_USER: Optional[str] = None
-    NEO4J_PASSWORD: Optional[str] = None
+    NEO4J_URI: str | None = None
+    NEO4J_USER: str | None = None
+    NEO4J_PASSWORD: str | None = None
 
     # Entity Extraction
     SPACY_MODEL: str = "en_core_web_sm"
-    ENTITY_TYPES: list = ["PERSON", "ORG", "PRODUCT", "GPE", "EVENT", "TECH"]
+    ENTITY_TYPES: list[str] = ["PERSON", "ORG", "PRODUCT", "GPE", "EVENT", "TECH"]
 
     # Logging
     LOG_LEVEL: str = "INFO"
 
     class Config:
-        env_file = ".env"
-        case_sensitive = True
+        env_file: str = ".env"
+        case_sensitive: bool = True
 
 
 # Global settings instance
