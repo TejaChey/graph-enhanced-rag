@@ -3,8 +3,13 @@ langchain-community
 langchain-text-splitters
 langchain-core
 
+langchain-huggingface
+huggingface_hub
+
+langchain-chroma
 chromadb
 pinecone
+faiss-cpu
 
 sentence-transformers
 

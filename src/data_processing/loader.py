@@ -14,8 +14,8 @@ logger = setup_logger(__name__)
 
 
 class DocumentLoader:
-    def __init__(self, data_dir: Path = settings.RAW_DATA_DIR):
-        self.data_dir: Path = data_dir
+    def __init__(self, data_dir: Path | None = None):
+        self.data_dir: Path = data_dir or settings.RAW_DATA_DIR
         logger.info(f"DocumentLoader initialized with directory: {self.data_dir}")
 
     def load_markdown_files(self) -> list[Document]:
@@ -58,7 +58,6 @@ class DocumentLoader:
         return all_docs
 
 if __name__ == "__main__":
-    # Test the loader
     loader = DocumentLoader()
     print(f"Data directory: {loader.data_dir}")
     print(f"Files in directory: {list(loader.data_dir.glob('**/*'))[:5]}")

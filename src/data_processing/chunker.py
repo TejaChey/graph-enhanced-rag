@@ -10,11 +10,11 @@ logger = setup_logger(__name__)
 class DocumentChunker:
     def __init__(
         self,
-        chunk_size: int = settings.CHUNK_SIZE,
-        chunk_overlap: int = settings.CHUNK_OVERLAP
+        chunk_size: int | None = None,
+        chunk_overlap: int | None = None
     ):
-        self.chunk_size: int = chunk_size
-        self.chunk_overlap: int = chunk_overlap
+        self.chunk_size: int = chunk_size or settings.CHUNK_SIZE
+        self.chunk_overlap: int = chunk_overlap or settings.CHUNK_OVERLAP
 
         logger.info(
             "DocumentChunker initialized: ",
@@ -44,7 +44,6 @@ class DocumentChunker:
 
 
 if __name__ == "__main__":
-    # Test the chunker
     chunker = DocumentChunker()
     print(f"Chunk size: {chunker.chunk_size}")
     print(f"Chunk overlap: {chunker.chunk_overlap}")

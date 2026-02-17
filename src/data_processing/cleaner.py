@@ -40,7 +40,6 @@ class TextCleaner:
 
 
 if __name__ == "__main__":
-    # Test the cleaner
     cleaner = TextCleaner()
     test_text = "This   is    a  test   text  with   extra    spaces."
     print(f"Original: {test_text}")

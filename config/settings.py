@@ -1,7 +1,10 @@
+import os
 from pathlib import Path
 
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
 
+_ = load_dotenv()
 
 class Settings(BaseSettings):
     # Project paths
@@ -27,9 +30,9 @@ class Settings(BaseSettings):
     VECTORSTORE_COLLECTION_NAME: str = "documentation"
 
     # LLM Configuration
-    OLLAMA_BASE_URL: str = "http://localhost:11434"
-    OLLAMA_MODEL: str = "llama3.2"
-    LLM_TEMPERATURE: float = 0.0
+    HF_MODEL_NAME: str = "HuggingFaceH4/zephyr-7b-beta"
+    HF_API_TOKEN: str | None = os.getenv('HUGGINGFACEHUB_API_TOKEN')
+    LLM_TEMPERATURE: float = 0.1
     LLM_MAX_TOKENS: int = 512
 
     # Retrieval Configuration
@@ -77,4 +80,3 @@ if __name__ == "__main__":
     print("Configuration loaded")
     print(f" - Chunk size: {settings.CHUNK_SIZE}")
     print(f" - Embedding model: {settings.EMBEDDING_MODEL}")
-    print(f" - LLM model: {settings.OLLAMA_MODEL}")
