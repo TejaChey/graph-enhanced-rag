@@ -72,11 +72,3 @@ def setup_directories():
     ]
     for directory in directories:
         directory.mkdir(parents=True, exist_ok=True)
-
-
-if __name__ == "__main__":
-    setup_directories()
-    print("Directories created")
-    print("Configuration loaded")
-    print(f" - Chunk size: {settings.CHUNK_SIZE}")
-    print(f" - Embedding model: {settings.EMBEDDING_MODEL}")
