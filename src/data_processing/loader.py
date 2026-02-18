@@ -22,7 +22,7 @@ class DocumentLoader:
         logger.info("Loading markdown files...")
 
         loader = DirectoryLoader(
-            str(self.data_dir),
+            path=str(self.data_dir),
             glob="**/*.md",
             loader_cls=UnstructuredMarkdownLoader
         )
@@ -34,7 +34,7 @@ class DocumentLoader:
         logger.info("Loading text files...")
 
         loader = DirectoryLoader(
-            str(self.data_dir),
+            path=str(self.data_dir),
             glob="**/*.txt",
             loader_cls=TextLoader
         )

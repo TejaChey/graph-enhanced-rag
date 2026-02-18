@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
+
+from langchain_core.documents import Document
 
 
 def count_files_in_directory(directory: Path, extension: str = "*") -> int:
@@ -13,18 +15,18 @@ def count_files_in_directory(directory: Path, extension: str = "*") -> int:
         return len(list(directory.rglob(f"*.{extension.lstrip('*.')}")))
 
 
-def load_json(file_path: Path) -> Dict[str, Any]:
+def load_json(file_path: Path) -> dict[str, Any]:
     with open(file_path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
 
-def save_json(data: Dict[str, Any], file_path: Path) -> None:
+def save_json(data: dict[str, Any], file_path: Path) -> None:
     file_path.parent.mkdir(parents=True, exist_ok=True)
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
 
-def format_docs(docs: List[Any]) -> str:
+def format_docs(docs: list[Document]) -> str:
     return "\n\n".join([doc.page_content for doc in docs])
 
 

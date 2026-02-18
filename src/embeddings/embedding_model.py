@@ -18,13 +18,17 @@ class EmbeddingModel:
 
         logger.info(f"Initializing embedding model: {self.model_name} on {self.device}")
 
-        self.embeddings: HuggingFaceEmbeddings = HuggingFaceEmbeddings(
-            model_name=self.model_name,
-            model_kwargs={'device': self.device},
-            encode_kwargs={'normalize_embeddings': True}
-        )
+        self.embeddings: HuggingFaceEmbeddings | None = None
 
     def get_embeddings(self) -> HuggingFaceEmbeddings:
+        if self.embeddings is None:
+            logger.info("Loading HuggingFace embeddings model...")
+            self.embeddings = HuggingFaceEmbeddings(
+                model_name=self.model_name,
+                model_kwargs={'device': self.device},
+                encode_kwargs={'normalize_embeddings': True}
+            )
+            logger.info("Embeddings model loaded successfully")
         return self.embeddings
 
     def embed_query(self, text: str) -> list[float]:

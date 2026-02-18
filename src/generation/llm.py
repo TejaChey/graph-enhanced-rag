@@ -1,10 +1,10 @@
-from typing import List
+from langchain_core.documents import Document
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnablePassthrough
+from langchain_huggingface import HuggingFaceEndpoint
 
-from langchain.chains import LLMChain
-from langchain.prompts import PromptTemplate
-from langchain_community.llms import Ollama
-
-from config import prompts, settings
+from config import settings
 from src.utils import format_docs, setup_logger
 
 logger = setup_logger(__name__)
@@ -13,65 +13,62 @@ logger = setup_logger(__name__)
 class LLMGenerator:
     def __init__(
         self,
-        model_name: str,
-        temperature: float
+        model_name: str | None = None,
+        temperature: float | None = None
     ):
-        self.model_name = model_name or settings.OLLAMA_MODEL
-        self.temperature = temperature or settings.LLM_TEMPERATURE
+        self.model_name: str = model_name or settings.HF_MODEL_NAME
+        self.temperature: float = temperature or settings.LLM_TEMPERATURE
+        self.llm: HuggingFaceEndpoint | None = None
 
-        logger.info(
-            f"LLMGenerator initialized: model={self.model_name}, "
-            f"temperature={self.temperature}"
+        logger.info(f"LLMGenerator initialized: model={self.model_name}")
+
+    def get_llm(self) -> HuggingFaceEndpoint:
+        if self.llm is None:
+            logger.info("Initializing HuggingFace LLM...")
+            self.llm = HuggingFaceEndpoint(
+                model=self.model_name,
+                temperature=self.temperature,
+                max_new_tokens=settings.LLM_MAX_TOKENS,
+            )
+            logger.info("LLM initialized successfully")
+        return self.llm
+
+    def build_chain(self, prompt_template: str | None = None):
+        prompt = ChatPromptTemplate.from_template(
+            prompt_template or """
+            You are a helpful assistant answering questions about documentation.
+            Use the context below to answer the question.
+            If you don't know the answer, say so - don't make it up.
+
+            Context: {context}
+
+            Question: {question}
+
+            Answer:
+            """
         )
 
-        # TODO: Initialize Ollama LLM
-        self.llm = None
-
-    def get_llm(self) -> Ollama:
-        # TODO: Implement lazy loading
-        # if self.llm is None:
-        #     self.llm = Ollama(
-        #         base_url=settings.OLLAMA_BASE_URL,
-        #         model=self.model_name,
-        #         temperature=self.temperature
-        #     )
-        # return self.llm
-
-        raise NotImplementedError("TODO: Implement LLM initialization")
+        chain = prompt | self.get_llm() | StrOutputParser()
+        return chain
 
     def generate_answer(
         self,
         query: str,
-        context_docs: List,
-        prompt_template: str
+        context_docs: list[Document],
+        prompt_template: str | None = None
     ) -> str:
-        logger.info(f"Generating answer for query: {query[:50]}...")
+        logger.info("Generating answer for query...")
 
-        # TODO: Implement answer generation
-        # Example structure:
-        # context = format_docs(context_docs)
-        #
-        # template = prompt_template or prompts.BASELINE_QA_TEMPLATE
-        # prompt = PromptTemplate(
-        #     template=template,
-        #     input_variables=["context", "question"]
-        # )
-        #
-        # chain = LLMChain(llm=self.get_llm(), prompt=prompt)
-        # answer = chain.run(context=context, question=query)
-        #
-        # logger.info("Answer generated successfully")
-        # return answer
+        chain = self.build_chain(prompt_template)
 
-        raise NotImplementedError("TODO: Implement answer generation")
+        answer = chain.invoke({
+            "context": format_docs(context_docs),
+            "question": query
+        })
+
+        logger.info("Answer generated successfully")
+        return answer.strip()
 
     def generate_simple(self, prompt: str) -> str:
-        # TODO: Use self.get_llm()(prompt) or similar
-        raise NotImplementedError("TODO: Implement simple generation")
-
-
-if __name__ == "__main__":
-    # Test the LLM generator
-    generator = LLMGenerator()
-    print(f"Model: {generator.model_name}")
-    print(f"Temperature: {generator.temperature}")
+        chain = ChatPromptTemplate.from_template("{input}") | self.get_llm() | StrOutputParser()
+        return chain.invoke({"input": prompt})
