@@ -1,79 +1,93 @@
-import json
 import sys
+import time
 from pathlib import Path
 
 # Add project root to path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from config import settings
-from src.utils import load_json, setup_logger
-
-logger = setup_logger(__name__)
+from src.utils import load_json, save_json
 
 
 class RAGEvaluator:
-    def __init__(self, test_questions_path: Path):
+    def __init__(self, test_questions_path=None):
         self.test_questions_path = (
-            test_questions_path or
-            project_root / "evaluation" / "test_questions.json"
+            test_questions_path
+            or project_root / "evaluation" / "test_questions.json"
         )
         self.test_data = None
 
-        logger.info("RAGEvaluator initialized")
-
     def load_test_questions(self):
-        # TODO: load_json helper to load questions
-        # self.test_data = load_json(self.test_questions_path)
-        # logger.info(f"Loaded {len(self.test_data['questions'])} test questions")
+        self.test_data = load_json(self.test_questions_path)
+        print(f"Loaded {len(self.test_data.get('questions', []))} test questions")
 
-        logger.info("TODO: Implement test question loading")
+    def evaluate_retrieval(self, retriever, questions):
+        """Measure retrieval latency and top-k hit rate."""
+        times = []
+        hits = 0
 
-    def evaluate_retrieval(self, retriever, questions: list):
-        logger.info("Evaluating retrieval quality...")
+        for item in questions:
+            query = item["question"]
+            expected_keywords = item.get("keywords", [])
 
-        # TODO: Implement retrieval evaluation
-        metrics = {
-            "avg_retrieval_time": 0.0,
-            "top_k_accuracy": 0.0,
-            "mrr": 0.0  # Mean Reciprocal Rank
+            start = time.perf_counter()
+            docs = retriever.retrieve(query)
+            elapsed = time.perf_counter() - start
+            times.append(elapsed)
+
+            retrieved_text = " ".join(d.page_content for d in docs).lower()
+            if any(kw.lower() in retrieved_text for kw in expected_keywords):
+                hits += 1
+
+        n = len(questions) or 1
+        return {
+            "avg_retrieval_time": round(sum(times) / n, 4),
+            "top_k_accuracy": round(hits / n, 4),
         }
 
-        return metrics
+    def evaluate_generation(self, chain, questions):
+        """Measure answer generation latency."""
+        times = []
 
-    def evaluate_generation(self, retriever, generator, questions: list):
-        logger.info("Evaluating generation quality...")
+        for item in questions:
+            query = item["question"]
+            start = time.perf_counter()
+            chain.invoke({"input": query})
+            elapsed = time.perf_counter() - start
+            times.append(elapsed)
 
-        # TODO: Implement generation evaluation
-        metrics = {
-            "avg_generation_time": 0.0,
-            "answer_accuracy": 0.0,
-            "answer_relevance": 0.0
+        n = len(questions) or 1
+        return {
+            "avg_generation_time": round(sum(times) / n, 4),
         }
 
-        return metrics
+    def run_full_evaluation(self, retriever, chain):
+        print("=" * 60)
+        print("Running Full RAG Evaluation")
+        print("=" * 60)
 
-    def run_full_evaluation(self, retriever, generator):
-        logger.info("=" * 60)
-        logger.info("Running Full RAG Evaluation")
-        logger.info("=" * 60)
+        if self.test_data is None:
+            self.load_test_questions()
 
-        # TODO: Run both retrieval and generation evaluation
-        # retrieval_metrics = self.evaluate_retrieval(retriever)
-        # generation_metrics = self.evaluate_generation(retriever, generator)
+        questions = self.test_data.get("questions", [])
+
+        retrieval_metrics = self.evaluate_retrieval(retriever, questions)
+        generation_metrics = self.evaluate_generation(chain, questions)
 
         results = {
-            "retrieval": {},
-            "generation": {},
-            "overall": {}
+            "retrieval": retrieval_metrics,
+            "generation": generation_metrics,
+            "overall": {
+                "total_questions": len(questions),
+            },
         }
 
-        logger.info("TODO: Implement full evaluation")
+        print("Evaluation complete:", results)
         return results
 
-    def save_results(self, results: dict, output_path: Path):
-        # TODO: Save results to JSON file with timestamp
-        logger.info("TODO: Implement results saving")
+    def save_results(self, results, output_path):
+        save_json(results, output_path)
+        print(f"Results saved to {output_path}")
 
 
 def main():
@@ -84,25 +98,31 @@ def main():
         "--mode",
         choices=["baseline", "graph"],
         default="baseline",
-        help="Which RAG mode to evaluate"
+        help="Which RAG mode to evaluate",
     )
-
     args = parser.parse_args()
 
-    logger.info(f"Evaluating {args.mode} RAG...")
+    print(f"Evaluating {args.mode} RAG...")
 
-    # TODO: Initialize components and run evaluation
-    # evaluator = RAGEvaluator()
-    # evaluator.load_test_questions()
-    #
-    # if args.mode == "baseline":
-    #     # Initialize baseline components
-    #     # retriever = BaseRetriever(...)
-    #     # generator = LLMGenerator(...)
-    #     # results = evaluator.run_full_evaluation(retriever, generator)
-    #     pass
+    if args.mode == "baseline":
+        from src.embeddings import EmbeddingModel
+        from src.generation import LLMGenerator
+        from src.retrieval import BaseRetriever
 
-    print("TODO: Implement main evaluation")
+        embedding_model = EmbeddingModel()
+        retriever = BaseRetriever(embedding_model=embedding_model)
+        retriever.load_vectorstore()
+        lc_retriever = retriever.as_retriever()
+
+        generator = LLMGenerator()
+        chain = generator.build_rag_chain(lc_retriever)
+
+        evaluator = RAGEvaluator()
+        results = evaluator.run_full_evaluation(retriever, chain)
+        evaluator.save_results(
+            results,
+            project_root / "evaluation" / "results_baseline.json",
+        )
 
 
 if __name__ == "__main__":

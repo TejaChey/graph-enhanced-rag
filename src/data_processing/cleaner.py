@@ -2,41 +2,24 @@ import re
 
 from langchain_core.documents import Document
 
-from src.utils import setup_logger
-
-logger = setup_logger(__name__)
-
 
 class TextCleaner:
-    def remove_extra_whitespace(self, text: str) -> str:
+    def remove_extra_whitespace(self, text):
         text = re.sub(r' +', ' ', text)
         text = re.sub(r'\n\n+', '\n\n', text)
-        text = text.strip()
-        return text
+        return text.strip()
 
-    def remove_special_characters(self, text: str, keep_chars: str = "") -> str:
+    def remove_special_characters(self, text, keep_chars=""):
         pattern = f'[^a-zA-Z0-9\\s{re.escape(keep_chars)}]'
-        cleaned = re.sub(pattern, '', text)
-        return cleaned
+        return re.sub(pattern, '', text)
 
-    def clean_document(self, document: Document) -> Document:
+    def clean_document(self, document):
         cleaned_content = self.remove_extra_whitespace(document.page_content)
         cleaned_content = self.remove_special_characters(cleaned_content)
+        return Document(page_content=cleaned_content, metadata=document.metadata)
 
-        cleaned_doc = Document(
-            page_content=cleaned_content,
-            metadata=document.metadata
-        )
-
-        return cleaned_doc
-
-    def clean_documents(self, documents: list[Document]) -> list[Document]:
-        logger.info(f"Cleaning {len(documents)} documents...")
-
-        cleaned = [self.clean_document(doc) for doc in documents]
-
-        logger.info(f"Cleaned {len(cleaned)} documents")
-        return cleaned
+    def clean_documents(self, documents):
+        return [self.clean_document(doc) for doc in documents]
 
 
 if __name__ == "__main__":

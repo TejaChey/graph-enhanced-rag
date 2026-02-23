@@ -8,12 +8,9 @@ huggingface_hub
 
 langchain-chroma
 chromadb
-pinecone
 faiss-cpu
 
 sentence-transformers
-
-ollama
 
 networkx
 # neo4j
@@ -37,4 +34,3 @@ black
 flake8
 
 tqdm
-colorlog

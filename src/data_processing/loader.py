@@ -5,57 +5,36 @@ from langchain_community.document_loaders import (
     TextLoader,
     UnstructuredMarkdownLoader,
 )
-from langchain_core.documents import Document
 
 from config import settings
-from src.utils import setup_logger
-
-logger = setup_logger(__name__)
 
 
 class DocumentLoader:
-    def __init__(self, data_dir: Path | None = None):
-        self.data_dir: Path = data_dir or settings.RAW_DATA_DIR
-        logger.info(f"DocumentLoader initialized with directory: {self.data_dir}")
+    def __init__(self, data_dir=None):
+        self.data_dir = data_dir or settings.RAW_DATA_DIR
 
-    def load_markdown_files(self) -> list[Document]:
-        logger.info("Loading markdown files...")
-
+    def load_markdown_files(self):
         loader = DirectoryLoader(
             path=str(self.data_dir),
             glob="**/*.md",
-            loader_cls=UnstructuredMarkdownLoader
+            loader_cls=UnstructuredMarkdownLoader,
         )
+        return loader.load()
 
-        documents = loader.load()
-        return documents
-
-    def load_text_files(self) -> list[Document]:
-        logger.info("Loading text files...")
-
+    def load_text_files(self):
         loader = DirectoryLoader(
             path=str(self.data_dir),
             glob="**/*.txt",
-            loader_cls=TextLoader
+            loader_cls=TextLoader,
         )
+        return loader.load()
 
-        documents = loader.load()
-        return documents
-
-    def load_all_documents(self) -> list[Document]:
-        logger.info("Loading all documents...")
-
-        all_docs: list[Document] = []
-
-        md_docs = self.load_markdown_files()
-        all_docs.extend(md_docs)
-
-        txt_docs = self.load_text_files()
-        all_docs.extend(txt_docs)
-
-        logger.info(f"Total documents loaded: {len(all_docs)}")
-
+    def load_all_documents(self):
+        all_docs = []
+        all_docs.extend(self.load_markdown_files())
+        all_docs.extend(self.load_text_files())
         return all_docs
+
 
 if __name__ == "__main__":
     loader = DocumentLoader()

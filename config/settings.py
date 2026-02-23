@@ -15,7 +15,6 @@ class Settings(BaseSettings):
     STORAGE_DIR: Path = PROJECT_ROOT / "storage"
     VECTORSTORE_DIR: Path = STORAGE_DIR / "vectorstore"
     GRAPH_DIR: Path = STORAGE_DIR / "graph"
-    LOG_DIR: Path = PROJECT_ROOT / "logs"
 
     # Document Processing
     CHUNK_SIZE: int = 1000
@@ -23,7 +22,6 @@ class Settings(BaseSettings):
 
     # Embedding Configuration
     EMBEDDING_MODEL: str = "all-MiniLM-L6-v2"
-    # EMBEDDING_MODEL: str = "BAAI/bge-small-en-v1.5"
     EMBEDDING_DEVICE: str = "cpu"  # or "cuda"
 
     # Vector Store
@@ -37,7 +35,7 @@ class Settings(BaseSettings):
 
     # Retrieval Configuration
     RETRIEVAL_TOP_K: int = 4
-    RETRIEVAL_SCORE_THRESHOLD: float | None = None  # Minimum similarity score
+    RETRIEVAL_SCORE_THRESHOLD: float | None = None
 
     # Graph Configuration
     GRAPH_ENABLED: bool = False
@@ -50,25 +48,10 @@ class Settings(BaseSettings):
     SPACY_MODEL: str = "en_core_web_sm"
     ENTITY_TYPES: list[str] = ["PERSON", "ORG", "PRODUCT", "GPE", "EVENT", "TECH"]
 
-    # Logging
-    LOG_LEVEL: str = "INFO"
-
     class Config:
         env_file: str = ".env"
         case_sensitive: bool = True
+        extra: str = "ignore"
 
 
-# Global settings instance
 settings = Settings()
-
-
-def setup_directories():
-    directories = [
-        settings.RAW_DATA_DIR,
-        settings.PROCESSED_DATA_DIR,
-        settings.VECTORSTORE_DIR,
-        settings.GRAPH_DIR,
-        settings.LOG_DIR,
-    ]
-    for directory in directories:
-        directory.mkdir(parents=True, exist_ok=True)

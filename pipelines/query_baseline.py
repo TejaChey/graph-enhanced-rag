@@ -9,81 +9,60 @@ from config import settings
 from src.embeddings import EmbeddingModel
 from src.generation import LLMGenerator
 from src.retrieval import BaseRetriever
-from src.utils import setup_logger
-
-logger = setup_logger(__name__, log_file=settings.LOG_DIR / "query_baseline.log")
 
 
-def query_rag(question: str, retriever: BaseRetriever, generator: LLMGenerator) -> str:
-    logger.info(f"Query: {question}")
+def build_rag(top_k=None):
+    """Initialise and return a ready-to-invoke RAG chain."""
+    embedding_model = EmbeddingModel()
+    retriever = BaseRetriever(embedding_model=embedding_model, top_k=top_k)
+    retriever.load_vectorstore()
+    lc_retriever = retriever.as_retriever()
 
-    # TODO: Step 1 - Retrieve relevant documents
-    # relevant_docs = retriever.retrieve(question)
-    # logger.info(f"Retrieved {len(relevant_docs)} relevant documents")
+    generator = LLMGenerator()
+    chain = generator.build_rag_chain(lc_retriever)
+    return chain
 
-    logger.info("TODO: Implement document retrieval")
 
-    # TODO: Step 2 - Generate answer
-    # answer = generator.generate_answer(question, relevant_docs)
-    # logger.info("Answer generated")
-
-    logger.info("TODO: Implement answer generation")
-
-    # Placeholder return
-    return "TODO: Implement query_rag function"
+def query_rag(question, chain):
+    """Invoke the RAG chain and return the answer string."""
+    result = chain.invoke({"input": question})
+    return result["answer"]
 
 
 def interactive_mode():
-    logger.info("=" * 60)
-    logger.info("Baseline RAG - Interactive Mode")
-    logger.info("=" * 60)
+    print("=" * 60)
+    print("Baseline RAG - Interactive Mode")
+    print("=" * 60)
 
-    # TODO: Initialize components
-    # embedding_model = EmbeddingModel()
-    # retriever = BaseRetriever(embedding_model=embedding_model)
-    # retriever.load_vectorstore()
-    # generator = LLMGenerator()
+    print("Initialising RAG chain...")
+    chain = build_rag()
+    print("RAG system ready!\n")
 
-    logger.info("TODO: Implement component initialization")
+    while True:
+        question = input("Question: ").strip()
 
-    print("\nRAG System Ready! Type your questions (or 'quit' to exit)\n")
+        if question.lower() in ("quit", "exit", "q"):
+            print("Goodbye!")
+            break
 
-    # TODO: Implement query loop
-    # while True:
-    #     question = input("Question: ").strip()
-    #
-    #     if question.lower() in ['quit', 'exit', 'q']:
-    #         print("Goodbye!")
-    #         break
-    #
-    #     if not question:
-    #         continue
-    #
-    #     try:
-    #         answer = query_rag(question, retriever, generator)
-    #         print(f"\nAnswer: {answer}\n")
-    #         print("-" * 60)
-    #     except Exception as e:
-    #         logger.error(f"Query failed: {e}", exc_info=True)
-    #         print(f"Error: {e}\n")
+        if not question:
+            continue
 
-    print("TODO: Implement interactive query loop")
+        try:
+            answer = query_rag(question, chain)
+            print(f"\nAnswer: {answer}\n")
+            print("-" * 60)
+        except Exception as e:
+            print(f"Error: {e}\n")
 
 
-def single_query_mode(question: str):
-    logger.info("Single query mode")
+def single_query_mode(question):
+    print("Initialising RAG chain...")
+    chain = build_rag()
 
-    # TODO: Initialize and query
-    # embedding_model = EmbeddingModel()
-    # retriever = BaseRetriever(embedding_model=embedding_model)
-    # retriever.load_vectorstore()
-    # generator = LLMGenerator()
-    #
-    # answer = query_rag(question, retriever, generator)
-    # print(f"\nQuestion: {question}")
-    # print(f"Answer: {answer}\n")
-
-    print("TODO: Implement single query mode")
+    answer = query_rag(question, chain)
+    print(f"\nQuestion: {question}")
+    print(f"Answer: {answer}\n")
 
 
 def main():
@@ -92,10 +71,8 @@ def main():
     parser = argparse.ArgumentParser(description="Query the Baseline RAG system")
     parser.add_argument(
         "--question", "-q",
-        type=str,
-        help="Single question to answer (if not provided, enters interactive mode)"
+        help="Single question to answer (omit to enter interactive mode)",
     )
-
     args = parser.parse_args()
 
     if args.question:
@@ -108,5 +85,5 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as e:
-        logger.error(f"Query pipeline failed: {e}", exc_info=True)
+        print(f"Query pipeline failed: {e}")
         sys.exit(1)

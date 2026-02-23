@@ -6,14 +6,12 @@ from .helpers import (
     save_json,
     truncate_text,
 )
-from .logging_config import setup_logger
 
 __all__ = [
-    "setup_logger",
     "count_files_in_directory",
     "load_json",
     "save_json",
     "format_docs",
     "truncate_text",
-    "estimate_tokens"
+    "estimate_tokens",
 ]
