@@ -28,7 +28,8 @@ class Settings(BaseSettings):
     VECTORSTORE_COLLECTION_NAME: str = "documentation"
 
     # LLM Configuration
-    HF_MODEL_NAME: str = "HuggingFaceH4/zephyr-7b-beta"
+    # HF_MODEL_NAME: str = "HuggingFaceH4/zephyr-7b-beta"
+    HF_MODEL_NAME: str = "Qwen/Qwen2.5-7B-Instruct"
     HF_API_TOKEN: str | None = os.getenv('HUGGINGFACEHUB_API_TOKEN')
     LLM_TEMPERATURE: float = 0.1
     LLM_MAX_TOKENS: int = 512
@@ -55,3 +56,14 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+def setup_directories():
+    directories = [
+        settings.RAW_DATA_DIR,
+        settings.PROCESSED_DATA_DIR,
+        settings.VECTORSTORE_DIR,
+        settings.GRAPH_DIR,
+    ]
+    for directory in directories:
+        directory.mkdir(parents=True, exist_ok=True)

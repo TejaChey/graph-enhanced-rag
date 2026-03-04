@@ -12,7 +12,6 @@ from src.retrieval import BaseRetriever
 
 
 def build_rag(top_k=None):
-    """Initialise and return a ready-to-invoke RAG chain."""
     embedding_model = EmbeddingModel()
     retriever = BaseRetriever(embedding_model=embedding_model, top_k=top_k)
     retriever.load_vectorstore()
@@ -24,7 +23,6 @@ def build_rag(top_k=None):
 
 
 def query_rag(question, chain):
-    """Invoke the RAG chain and return the answer string."""
     result = chain.invoke({"input": question})
     return result["answer"]
 

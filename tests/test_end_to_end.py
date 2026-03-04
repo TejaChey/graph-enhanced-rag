@@ -60,9 +60,9 @@ def test_query_pipeline(retriever, embedding_model):
     print("="*60)
 
     test_questions = [
-        "What is LangChain?",
-        "How do you create a chain?",
-        "What are document loaders?"
+        "What is NumPy.",
+        "What is broadcasting?",
+        "What is numpy.ravel()?"
     ]
 
     # Initialize generator
@@ -98,13 +98,13 @@ def test_query_pipeline(retriever, embedding_model):
         elapsed = time.time() - start_time
 
         print(f"\n  Answer generated in {elapsed:.2f}s")
-        print(f"\n  Answer:")
+        print("\n  Answer:")
         print(f"  {'-'*50}")
         print(f"  {answer}")
         print(f"  {'-'*50}")
     except Exception as e:
         print(f"\n  Generation failed: {e}")
-        print(f"    This might be due to HuggingFace API issues")
+        print("    This might be due to HuggingFace API issues")
 
 
 def test_retrieval_quality(retriever):

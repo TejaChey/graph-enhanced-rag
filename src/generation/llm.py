@@ -1,7 +1,7 @@
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnablePassthrough
-from langchain_huggingface import HuggingFaceEndpoint
+from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
 
 from config import settings
 from src.utils import format_docs
@@ -15,11 +15,12 @@ class LLMGenerator:
 
     def get_llm(self):
         if self._llm is None:
-            self._llm = HuggingFaceEndpoint(
+            endpoint = HuggingFaceEndpoint(
                 model=self.model_name,
                 temperature=self.temperature,
                 max_new_tokens=settings.LLM_MAX_TOKENS,
             )
+            self._llm = ChatHuggingFace(llm=endpoint)
         return self._llm
 
     def build_rag_chain(self, retriever, prompt_template=None):

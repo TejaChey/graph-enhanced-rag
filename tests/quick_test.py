@@ -43,7 +43,7 @@ print("done")
 
 # 4. Query using modern as_retriever()
 print("4. Testing retrieval...", end=" ")
-test_query = "What is LangChain?"
+test_query = "What is Numpy?"
 results = retriever.retrieve(test_query, top_k=2)
 print(f"(found {len(results)} docs)")
 
