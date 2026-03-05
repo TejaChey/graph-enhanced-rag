@@ -19,6 +19,7 @@ spacy
 
 unstructured
 markdown
+pypdf
 
 python-dotenv
 pydantic
