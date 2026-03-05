@@ -1,9 +1,6 @@
 class GraphRetriever:
     def __init__(self):
-        # TODO Phase 2:
-        # - Load knowledge graph from storage
-        # - Initialize graph traversal algorithms
-        # - Set up entity linking
+        # TODO
         pass
 
     def retrieve(self, query, top_k=4):

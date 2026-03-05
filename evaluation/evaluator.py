@@ -22,7 +22,6 @@ class RAGEvaluator:
         print(f"Loaded {len(self.test_data.get('questions', []))} test questions")
 
     def evaluate_retrieval(self, retriever, questions):
-        """Measure retrieval latency and top-k hit rate."""
         times = []
         hits = 0
 
@@ -46,7 +45,6 @@ class RAGEvaluator:
         }
 
     def evaluate_generation(self, chain, questions):
-        """Measure answer generation latency."""
         times = []
 
         for item in questions:
@@ -62,9 +60,8 @@ class RAGEvaluator:
         }
 
     def run_full_evaluation(self, retriever, chain):
-        print("=" * 60)
-        print("Running Full RAG Evaluation")
-        print("=" * 60)
+        print("\nRunning Full RAG Evaluation")
+        print("-" * 60)
 
         if self.test_data is None:
             self.load_test_questions()
