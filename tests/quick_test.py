@@ -4,7 +4,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from config import settings, setup_directories
+from config import setup_directories
 from src.data_processing import DocumentChunker, DocumentLoader
 from src.embeddings import EmbeddingModel
 from src.generation import LLMGenerator
@@ -12,7 +12,6 @@ from src.retrieval import BaseRetriever
 
 print("\nQuick RAG Test\n")
 
-# Setup
 setup_directories()
 
 # 1. Load documents
@@ -20,12 +19,12 @@ print("1. Loading documents...", end=" ")
 loader = DocumentLoader()
 docs = loader.load_all_documents()
 if not docs:
-    print("No documents found!")
-    print("   Run: bash scripts/download_docs.sh")
+    print("No documents found! Add files to data/raw/")
+    sys.exit(1)
 else:
     print(f"({len(docs)} docs)")
 
-# Take only first 5 docs for speed
+# Use only first 5 docs for speed
 docs = docs[:5]
 
 # 2. Chunk
@@ -41,13 +40,13 @@ retriever = BaseRetriever(embedding_model=embedding_model)
 retriever.create_vectorstore(chunks)
 print("done")
 
-# 4. Query using modern as_retriever()
+# 4. Retrieve
 print("4. Testing retrieval...", end=" ")
-test_query = "What is Numpy?"
+test_query = "What is the fuel capacity?"
 results = retriever.retrieve(test_query, top_k=2)
 print(f"(found {len(results)} docs)")
 
-# 5. Generate using modern agentic chain
+# 5. Generate
 print("5. Testing generation...", end=" ")
 try:
     generator = LLMGenerator()

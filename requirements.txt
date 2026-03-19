@@ -1,36 +1,46 @@
+# ── LangChain core ────────────────────────────────────────────────────────────
 langchain
 langchain-community
 langchain-text-splitters
 langchain-core
 
+# ── LLM & Embeddings (HuggingFace) ────────────────────────────────────────────
 langchain-huggingface
 huggingface_hub
+sentence-transformers
 
+# ── Vector Stores ──────────────────────────────────────────────────────────────
 langchain-chroma
 chromadb
 faiss-cpu
 
-sentence-transformers
-
+# ── Graph ──────────────────────────────────────────────────────────────────────
 networkx
-# neo4j
+# neo4j  # uncomment if using Neo4j backend in Phase 3
 
+# ── NLP (Entity Extraction) ────────────────────────────────────────────────────
 spacy
+# After installing, also run:
+#   python -m spacy download en_core_web_sm
 
+# ── Document Loading ───────────────────────────────────────────────────────────
 unstructured
 markdown
+pypdf                   # PDF support
 
+# ── Config & Validation ────────────────────────────────────────────────────────
 python-dotenv
 pydantic
 pydantic-settings
 
+# ── Data Science ───────────────────────────────────────────────────────────────
 pandas
 numpy
 scikit-learn
 
+# ── Dev Tools ─────────────────────────────────────────────────────────────────
 jupyter
 ipykernel
 black
 flake8
-
 tqdm
