@@ -1,7 +1,6 @@
 import sys
 from pathlib import Path
 
-# Add project root to path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
@@ -29,7 +28,7 @@ def query_rag(question, chain):
 
 def interactive_mode():
     print("\nBaseline RAG - Interactive Mode")
-    print("-" * 60)
+    print("-" * 40)
 
     print("Initialising RAG chain...")
     chain = build_rag()

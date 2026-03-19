@@ -14,8 +14,8 @@ print("\nQuick RAG Test\n")
 
 setup_directories()
 
-# 1. Load documents
-print("1. Loading documents...", end=" ")
+# Load documents
+print("Loading documents...", end=" ")
 loader = DocumentLoader()
 docs = loader.load_all_documents()
 if not docs:
@@ -27,26 +27,26 @@ else:
 # Use only first 5 docs for speed
 docs = docs[:5]
 
-# 2. Chunk
-print("2. Chunking...", end=" ")
+# Chunk
+print("Chunking...", end=" ")
 chunker = DocumentChunker()
 chunks = chunker.chunk_documents(docs)
 print(f"({len(chunks)} chunks)")
 
-# 3. Embed & Store
-print("3. Creating vector store...", end=" ")
+# Embed & Store
+print("Creating vector store...", end=" ")
 embedding_model = EmbeddingModel()
 retriever = BaseRetriever(embedding_model=embedding_model)
 retriever.create_vectorstore(chunks)
 print("done")
 
-# 4. Retrieve
+# 4. Query using modern as_retriever()
 print("4. Testing retrieval...", end=" ")
-test_query = "What is the fuel capacity?"
+test_query = "What is Numpy?"
 results = retriever.retrieve(test_query, top_k=2)
 print(f"(found {len(results)} docs)")
 
-# 5. Generate
+# 5. Generate using modern agentic chain
 print("5. Testing generation...", end=" ")
 try:
     generator = LLMGenerator()

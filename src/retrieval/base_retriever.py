@@ -31,7 +31,6 @@ class BaseRetriever:
         return self.vectorstore
 
     def as_retriever(self):
-        """Return a LangChain-compatible retriever for use in chains."""
         if self.vectorstore is None:
             self.load_vectorstore()
         return self.vectorstore.as_retriever(

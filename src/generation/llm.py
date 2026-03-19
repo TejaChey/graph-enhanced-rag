@@ -24,10 +24,6 @@ class LLMGenerator:
         return self._llm
 
     def build_rag_chain(self, retriever, prompt_template=None):
-        """
-        Build a modern agentic RAG chain using pure LCEL.
-        Accepts {"input": question} and produces {"input", "context", "answer"}.
-        """
         system_prompt = prompt_template or (
             "You are a helpful assistant answering questions about documentation. "
             "Use the following retrieved context to answer the question. "
@@ -50,10 +46,6 @@ class LLMGenerator:
         )
 
     def build_conversational_rag_chain(self, retriever):
-        """
-        Build a conversational agentic RAG chain with chat history support.
-        Accepts {"input": question, "chat_history": [messages]}.
-        """
         contextualize_q_prompt = ChatPromptTemplate.from_messages([
             ("system",
              "Given the chat history and the latest user question, "
@@ -85,10 +77,6 @@ class LLMGenerator:
         )
 
     def generate_answer(self, query, context_docs, prompt_template=None):
-        """
-        Generate an answer directly from a list of pre-retrieved documents.
-        Useful when retrieval is handled externally (e.g. graph retrieval).
-        """
         system = prompt_template or (
             "You are a helpful assistant answering questions about documentation. "
             "Use the context below to answer. If unsure, say so.\n\nContext:\n{context}"
