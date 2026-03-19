@@ -39,6 +39,14 @@ class DocumentLoader:
         )
         return loader.load()
 
+    def load_pdf_files(self):
+        loader = DirectoryLoader(
+            path=str(self.data_dir),
+            glob="**/*.pdf",
+            loader_cls=PyPDFLoader,
+        )
+        return loader.load()
+
     def load_all_documents(self):
         all_docs = []
         all_docs.extend(self.load_markdown_files())

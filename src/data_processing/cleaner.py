@@ -10,7 +10,8 @@ class TextCleaner:
         return text.strip()
 
     def remove_special_characters(self, text, keep_chars=""):
-        pattern = f'[^a-zA-Z0-9\\s{re.escape(keep_chars)}]'
+        default_keep = r'.,;:!?()\[\]{}\-_\'\"/@#%&*+=<>|\\~`^'
+        pattern = f'[^a-zA-Z0-9\\s{re.escape(default_keep)}{re.escape(keep_chars)}]'
         return re.sub(pattern, '', text)
 
     def clean_document(self, document):

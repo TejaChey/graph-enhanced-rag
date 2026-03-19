@@ -8,9 +8,8 @@ from src.retrieval import BaseRetriever
 
 
 def test_ingestion_pipeline():
-    print("\n" + "="*60)
-    print("STEP 1: INGESTION PIPELINE")
-    print("="*60)
+    print("\nSTEP 1: INGESTION PIPELINE")
+    print("-"*60)
 
     # Load
     print("\n[1/5] Loading documents...")
@@ -55,9 +54,8 @@ def test_ingestion_pipeline():
 
 
 def test_query_pipeline(retriever, embedding_model):
-    print("\n" + "="*60)
-    print("STEP 2: QUERY PIPELINE")
-    print("="*60)
+    print("\nSTEP 2: QUERY PIPELINE")
+    print("-"*60)
 
     test_questions = [
         "What is NumPy.",
@@ -108,9 +106,8 @@ def test_query_pipeline(retriever, embedding_model):
 
 
 def test_retrieval_quality(retriever):
-    print("\n" + "="*60)
-    print("STEP 3: RETRIEVAL QUALITY CHECK")
-    print("="*60)
+    print("\nSTEP 3: RETRIEVAL QUALITY CHECK")
+    print("-"*60)
 
     # Test with specific query
     query = "document loaders"
@@ -148,9 +145,8 @@ def main():
     test_retrieval_quality(retriever)
 
     # Summary
-    print("\n" + "="*80)
-    print("TEST SUMMARY")
-    print("="*80)
+    print("\nTEST SUMMARY")
+    print("-"*80)
     print("Ingestion pipeline: PASSED")
     print("Query pipeline: PASSED")
     print("Retrieval quality: PASSED")

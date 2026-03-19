@@ -28,9 +28,8 @@ def query_rag(question, chain):
 
 
 def interactive_mode():
-    print("=" * 60)
-    print("Baseline RAG - Interactive Mode")
-    print("=" * 60)
+    print("\nBaseline RAG - Interactive Mode")
+    print("-" * 60)
 
     print("Initialising RAG chain...")
     chain = build_rag()
