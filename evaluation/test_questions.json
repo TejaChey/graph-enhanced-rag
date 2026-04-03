@@ -2,34 +2,40 @@
   "questions": [
     {
       "id": 1,
-      "question": "What is LangChain?",
-      "expected_answer": "LangChain is a framework for developing applications powered by language models.",
-      "category": "basic"
+      "question": "What is the fuel capacity of the Grand Vitara?",
+      "expected_answer": "The fuel tank capacity of the Grand Vitara.",
+      "category": "specifications"
     },
     {
       "id": 2,
-      "question": "How do you create a simple chain in LangChain?",
-      "expected_answer": "You can create a chain by combining a prompt template with an LLM using LLMChain or the newer LCEL syntax.",
-      "category": "implementation"
+      "question": "What type of engine does the Grand Vitara have?",
+      "expected_answer": "Details about the Grand Vitara petrol engine.",
+      "category": "specifications"
     },
     {
       "id": 3,
-      "question": "What are the main components of a RAG system?",
-      "expected_answer": "The main components are: document loading, text splitting, embeddings, vector store, retrieval, and generation.",
-      "category": "architecture"
+      "question": "How do I check the engine oil level in the Grand Vitara?",
+      "expected_answer": "Steps to check and top up engine oil.",
+      "category": "maintenance"
     },
     {
       "id": 4,
-      "question": "What is a vector store in LangChain?",
-      "expected_answer": "A vector store is a database that stores and retrieves document embeddings for similarity search.",
-      "category": "basic"
+      "question": "What is the recommended tire pressure for the Grand Vitara?",
+      "expected_answer": "The recommended tire pressure values for the vehicle.",
+      "category": "maintenance"
     },
     {
       "id": 5,
-      "question": "How do you split documents in LangChain?",
-      "expected_answer": "LangChain provides various text splitters like RecursiveCharacterTextSplitter, CharacterTextSplitter, and others for splitting documents.",
-      "category": "implementation"
+      "question": "How do I operate the infotainment system in the Grand Vitara?",
+      "expected_answer": "Instructions for using the infotainment system.",
+      "category": "features"
+    },
+    {
+      "id": 6,
+      "question": "What are the safety features of the Grand Vitara?",
+      "expected_answer": "List of safety features like airbags, ABS, etc.",
+      "category": "features"
     }
   ],
-  "notes": "TODO: Add more questions specific to your documentation. These are just examples to get started."
+  "notes": "Test questions based on the NEXA Grand Vitara Petrol Manual. Add more questions as needed."
 }

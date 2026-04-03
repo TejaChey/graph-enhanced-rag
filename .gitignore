@@ -1,45 +1,64 @@
+# ── Python Cache ──────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+
+# ── Virtual Environments ──────────────────────────────────────────────────────
+venv/
 *venv/
 env/
 ENV/
+.venv
+
+# ── Build / Distribution ──────────────────────────────────────────────────────
 *.egg-info/
 dist/
 build/
 
-.env*
-.venv
-*.un~
-.md
+# ── Environment & Secrets ─────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
 
+# ── IDE / Editor ─────────────────────────────────────────────────────────────
 .vscode/
 .idea/
 *.swp
 *.swo
+*.un~
 .DS_Store
 
+# ── Data & Storage (generated at runtime) ────────────────────────────────────
 data/raw/*
 data/processed/*
 storage/vectorstore/*
 storage/graph/*
 storage/cache/*
-logs/
-*.log
 
+# Keep the empty placeholder files so git tracks the folders
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !storage/vectorstore/.gitkeep
 !storage/graph/.gitkeep
 !storage/cache/.gitkeep
 
+# ── Logs ──────────────────────────────────────────────────────────────────────
+logs/
+*.log
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
 .ipynb_checkpoints/
 *.ipynb_checkpoints
 
+# ── Testing ───────────────────────────────────────────────────────────────────
 .pytest_cache/
 .coverage
 htmlcov/
 
+# ── Docs ──────────────────────────────────────────────────────────────────────
 docs/_build/
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
+pyrightconfig.json

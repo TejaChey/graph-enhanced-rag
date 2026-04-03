@@ -27,6 +27,15 @@ class DocumentLoader:
             path=str(self.data_dir),
             glob="**/*.txt",
             loader_cls=TextLoader,
+            loader_kwargs={"encoding": "latin-1"},
+        )
+        return loader.load()
+
+    def load_pdf_files(self):
+        loader = DirectoryLoader(
+            path=str(self.data_dir),
+            glob="**/*.pdf",
+            loader_cls=PyPDFLoader,
         )
         return loader.load()
 
