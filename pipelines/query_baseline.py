@@ -27,18 +27,12 @@ def query_rag(question, chain):
 
 
 def interactive_mode():
-    print("\nBaseline RAG - Interactive Mode")
-    print("-" * 40)
-
-    print("Initialising RAG chain...")
     chain = build_rag()
-    print("RAG system ready!\n")
 
     while True:
         question = input("Question: ").strip()
 
         if question.lower() in ("quit", "exit", "q"):
-            print("Goodbye!")
             break
 
         if not question:
@@ -47,18 +41,15 @@ def interactive_mode():
         try:
             answer = query_rag(question, chain)
             print(f"\nAnswer: {answer}\n")
-            print("-" * 60)
         except Exception as e:
             print(f"Error: {e}\n")
 
 
 def single_query_mode(question):
-    print("Initialising RAG chain...")
     chain = build_rag()
-
     answer = query_rag(question, chain)
     print(f"\nQuestion: {question}")
-    print(f"Answer: {answer}\n")
+    print(f"Answer: {answer}")
 
 
 def main():

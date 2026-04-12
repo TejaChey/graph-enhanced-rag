@@ -1,7 +1,6 @@
 import sys
 from pathlib import Path
 
-# Add project root to path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
@@ -45,7 +44,7 @@ def prompt_data_dir():
 
 def main():
     print("\nStarting Baseline RAG Ingestion Pipeline")
-    print("-" * 60)
+    print("-" * 40)
 
     setup_directories()
     data_dir = prompt_data_dir()
@@ -79,8 +78,6 @@ def main():
     retriever.create_vectorstore(chunks)
     print(f"  Vector store persisted to {settings.VECTORSTORE_DIR}")
 
-    # Step 5 - Build knowledge graph with typed relationships
-    print("\nStep 5: Building knowledge graph with typed relationships...")
     extractor = EntityExtractor()
     kg = KnowledgeGraph()
 
@@ -107,10 +104,8 @@ def main():
     saved_path = kg.save()
     print(f"  Knowledge graph saved to {saved_path}")
 
-    print("\n" + "=" * 60)
-    print("Ingestion complete! Ready for querying.")
+    print("\nIngestion complete! Ready for querying.")
     print("Next step: Run 'python pipelines/query_graph_rag.py'")
-    print("=" * 60)
 
 
 if __name__ == "__main__":

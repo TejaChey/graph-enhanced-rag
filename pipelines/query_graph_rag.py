@@ -1,7 +1,6 @@
 import sys
 from pathlib import Path
 
-# Add project root to path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
@@ -26,10 +25,6 @@ GRAPH_RAG_SYSTEM_PROMPT = (
 
 
 def build_graph_rag(top_k=None):
-    """
-    Initialise both retrievers and the LLM generator.
-    Returns (vector_retriever, graph_retriever, generator).
-    """
     # Vector retriever (ChromaDB)
     embedding_model = EmbeddingModel()
     base_retriever = BaseRetriever(embedding_model=embedding_model, top_k=top_k)
@@ -43,21 +38,9 @@ def build_graph_rag(top_k=None):
 
 
 def query_graph_rag(question: str, base_retriever, graph_retriever, generator) -> dict:
-    """
-    Run a single question through the Graph-Enhanced RAG pipeline.
-
-    Returns a dict with keys:
-        answer       – the LLM's response
-        vector_docs  – chunks retrieved from the vector store
-        graph_docs   – context retrieved from the knowledge graph
-    """
-    # 1. Retrieve from vector store
     vector_docs = base_retriever.retrieve(question)
-
-    # 2. Retrieve from knowledge graph
     graph_docs = graph_retriever.retrieve(question)
 
-    # 3. Format both contexts
     vector_context = format_docs(vector_docs) if vector_docs else "No document context found."
     graph_context = (
         "\n".join(doc.page_content for doc in graph_docs)
@@ -65,7 +48,6 @@ def query_graph_rag(question: str, base_retriever, graph_retriever, generator) -
         else "No graph relationships found for this query."
     )
 
-    # 4. Build a combined prompt and ask the LLM
     prompt_with_graph = GRAPH_RAG_SYSTEM_PROMPT.format(
         context=vector_context,
         graph_context=graph_context,
@@ -84,25 +66,17 @@ def query_graph_rag(question: str, base_retriever, graph_retriever, generator) -
 
 
 def interactive_mode():
-    print("=" * 60)
-    print("Graph-Enhanced RAG - Interactive Mode")
-    print("=" * 60)
-
     graph_path = settings.GRAPH_DIR / "knowledge_graph.graphml"
     if not graph_path.exists():
-        print("\n⚠  Knowledge graph not found!")
-        print("   Run 'python pipelines/ingest_baseline.py' first to build it.")
+        print("Knowledge graph not found. Run 'python pipelines/ingest_baseline.py' first.")
         sys.exit(1)
 
-    print("Initialising Graph-Enhanced RAG chain...")
     base_retriever, graph_retriever, generator = build_graph_rag()
-    print("Graph RAG system ready!\n")
 
     while True:
         question = input("Question: ").strip()
 
         if question.lower() in ("quit", "exit", "q"):
-            print("Goodbye!")
             break
 
         if not question:
@@ -110,17 +84,7 @@ def interactive_mode():
 
         try:
             result = query_graph_rag(question, base_retriever, graph_retriever, generator)
-
-            print(f"\n{'─'*60}")
-            print(f"Answer:\n{result['answer']}")
-            print(f"\n📄 Vector chunks used:  {len(result['vector_docs'])}")
-            print(f"🕸  Graph relations used: {len(result['graph_docs'])}")
-            if result["graph_docs"]:
-                print("  Graph context:")
-                for doc in result["graph_docs"]:
-                    print(f"    • {doc.page_content}")
-            print(f"{'─'*60}\n")
-
+            print(f"\nAnswer: {result['answer']}\n")
         except Exception as e:
             print(f"Error: {e}\n")
 
@@ -128,21 +92,13 @@ def interactive_mode():
 def single_query_mode(question: str):
     graph_path = settings.GRAPH_DIR / "knowledge_graph.graphml"
     if not graph_path.exists():
-        print("⚠  Knowledge graph not found! Run ingest_baseline.py first.")
+        print("Knowledge graph not found. Run ingest_baseline.py first.")
         sys.exit(1)
 
-    print("Initialising Graph-Enhanced RAG chain...")
     base_retriever, graph_retriever, generator = build_graph_rag()
-
     result = query_graph_rag(question, base_retriever, graph_retriever, generator)
     print(f"\nQuestion: {question}")
-    print(f"Answer:   {result['answer']}")
-    print(f"\n📄 Vector chunks used:  {len(result['vector_docs'])}")
-    print(f"🕸  Graph relations used: {len(result['graph_docs'])}")
-    if result["graph_docs"]:
-        print("  Graph context:")
-        for doc in result["graph_docs"]:
-            print(f"    • {doc.page_content}")
+    print(f"Answer: {result['answer']}")
 
 
 def main():
