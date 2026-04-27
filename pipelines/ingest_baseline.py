@@ -12,7 +12,6 @@ from src.retrieval import BaseRetriever
 
 
 def prompt_data_dir():
-    """Interactively ask the user which data directory to ingest."""
     available = sorted(
         p for p in settings.RAW_DATA_DIR.iterdir() if p.is_dir()
     )

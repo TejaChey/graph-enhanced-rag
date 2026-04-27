@@ -1,0 +1,12 @@
+{
+  "retrieval": {
+    "avg_retrieval_time": 0.0121,
+    "top_k_accuracy": 0.0
+  },
+  "generation": {
+    "avg_generation_time": 2.7255
+  },
+  "overall": {
+    "total_questions": 20
+  }
+}

@@ -2,40 +2,124 @@
   "questions": [
     {
       "id": 1,
-      "question": "What is the fuel capacity of the Grand Vitara?",
-      "expected_answer": "The fuel tank capacity of the Grand Vitara.",
+      "question": "What is the fuel capacity of the Volkswagen Virtus and where is the sticker with the specified fuel type located?",
+      "expected_answer": "The fuel filler cap cover or the area near the fuel filler cap contains a sticker specifying the required fuel type. The fuel filler cap is located at the rear of the vehicle.",
       "category": "specifications"
     },
     {
       "id": 2,
-      "question": "What type of engine does the Grand Vitara have?",
-      "expected_answer": "Details about the Grand Vitara petrol engine.",
-      "category": "specifications"
+      "question": "Under what conditions does the Virtus automatically lock all doors, and how can the automatic locking be overridden?",
+      "expected_answer": "All doors and the boot lid are locked automatically when the vehicle reaches a speed of 15 km/h. The automatic locking is indicated by the lighting up of the central locking symbol. To unlock, you can open a door from the inside, press the central locking button, or remove the key from the ignition (depending on vehicle equipment). The vehicle also unlocks automatically when the airbags are activated.",
+      "category": "security"
     },
     {
       "id": 3,
-      "question": "How do I check the engine oil level in the Grand Vitara?",
-      "expected_answer": "Steps to check and top up engine oil.",
-      "category": "maintenance"
+      "question": "How does the force limiter on the driver's window work, and what happens if you try to close the window multiple times against an obstacle?",
+      "expected_answer": "If an obstacle is detected, the closing process is interrupted and the glass pane retracts by several centimetres. If the obstacle prevents closing again within the next 10 seconds, the window moves back again. If you attempt to close it a third time within 10 seconds and the obstacle remains, the closing process is stopped entirely. Critically, the force limiter does NOT operate if you attempt to close the window again within that 10-second window — the window will close at full force. Waiting more than 10 seconds reactivates the force limiter.",
+      "category": "features"
     },
     {
       "id": 4,
-      "question": "What is the recommended tire pressure for the Grand Vitara?",
-      "expected_answer": "The recommended tire pressure values for the vehicle.",
-      "category": "maintenance"
+      "question": "What are the exact steps to deactivate the Keyless Access (keyless locking) system on the Virtus, and how is deactivation confirmed?",
+      "expected_answer": "To deactivate Keyless Access: 1. Lock the vehicle using the button on the key. 2. Within 5 seconds, press the button on the door handle. Deactivation is confirmed by a single flash of the direction indicators. To verify deactivation, wait at least 10 seconds and then press the button on the outer door handle — the door should remain locked. Keyless locking is automatically reactivated the next time the vehicle is unlocked.",
+      "category": "security"
     },
     {
       "id": 5,
-      "question": "How do I operate the infotainment system in the Grand Vitara?",
-      "expected_answer": "Instructions for using the infotainment system.",
-      "category": "features"
+      "question": "What events trigger the Virtus alarm system, and how can a triggered alarm be switched off?",
+      "expected_answer": "The alarm system is automatically activated approximately 30 seconds after the vehicle is locked. An alarm is triggered by: opening the bonnet, opening the boot lid, opening a door, tampering with the ignition lock, unlocking the door via the lock cylinder, or pressing the alarm button on the key (key version 2 only). A triggered alarm can be switched off by: unlocking the vehicle, turning on the ignition, or pressing the alarm button on the key (key version 2 only).",
+      "category": "security"
     },
     {
       "id": 6,
-      "question": "What are the safety features of the Grand Vitara?",
-      "expected_answer": "List of safety features like airbags, ABS, etc.",
+      "question": "What does the Virtus do if the key is accidentally locked inside the vehicle or in the boot with the Keyless Access system active?",
+      "expected_answer": "If the key is locked inside the vehicle, the vehicle unlocks itself automatically. If no door is opened within 45 seconds after this automatic unlocking, the vehicle automatically locks again. If the key is locked in the boot specifically, the boot lid will automatically unlock itself.",
+      "category": "security"
+    },
+    {
+      "id": 7,
+      "question": "What are all four configuration options for the central locking unlocking behaviour on the Virtus, and what is the difference between them?",
+      "expected_answer": "The four unlocking modes configurable via the Infotainment system (Car > Opening and Closing) are: 1. All doors — pressing the key button unlocks all doors, the boot lid, and the fuel filler flap simultaneously. 2. Single door — the first press of the key button unlocks only the front door and fuel filler flap; a second press unlocks all remaining doors and the boot lid. In Keyless Access vehicles, the door nearest to the key and the fuel filler flap are unlocked. 3. Doors on one side — the first press unlocks the driver's side door and fuel filler flap; a second press unlocks the rest. In Keyless Access vehicles, doors on the passenger's side near the key and the fuel filler flap are unlocked.",
       "category": "features"
+    },
+    {
+      "id": 8,
+      "question": "Explain the full sequence of events when a central locking fault occurs on the Virtus.",
+      "expected_answer": "When a central locking fault occurs, the warning light in the driver's door displays a specific sequence: first, it flashes quickly for 2 seconds in rapid succession; then it lights up continuously; after 30 seconds, it begins flashing slowly. The recommended action is to seek assistance from a specialist garage.",
+      "category": "maintenance"
+    },
+    {
+      "id": 9,
+      "question": "What are all the warning light symbols related to the airbag and seat belt systems in the Virtus, and what does each one mean?",
+      "expected_answer": "The airbag and restraint-related warning lights include: a symbol indicating front and rear seat belts are not in use; a symbol for rear seat belt in use; a symbol for rear seat belt not in use (with illuminated or flashing variants for occupied/unoccupied seats); a symbol that lights up for 4 seconds then flashes indicating airbag or belt tensioner has been switched off with a diagnostic device; a symbol indicating the airbag system is faulty; a symbol showing the front passenger airbag is activated; and a symbol showing the front passenger airbag is deactivated. A flashing symbol in conjunction with the key-operated switch symbol indicates the airbag deactivation switch itself is faulty.",
+      "category": "safety"
+    },
+    {
+      "id": 10,
+      "question": "What are all the driving assist system warning lights in the Virtus and what does each state (lit, flashing, in conjunction with another light) mean?",
+      "expected_answer": "ESC/ASR lights: Flashing = ESC or ASR is actively intervening; Lit = ESC or ASR is faulty; ASR deactivated symbol lit = ASR has been manually deactivated. Front Assist lights: Front Assist deactivated symbol = system has been turned off; Front Assist not available = system temporarily unavailable; Front Assist starting up = system is initialising; Warning of collision risk = lit when a collision risk is detected; Safe distance not kept = lit when following distance is too short. Cruise control: Cruise control activated symbol lit = system is active; Cruise control system faulty; Speed controls the vehicle in conjunction with another symbol. Speed limiter: Lit = activated; Flashing = set limit has been exceeded; Speed limiter faulty symbol; Lights up and regulates speed in conjunction with another symbol.",
+      "category": "safety"
+    },
+    {
+      "id": 11,
+      "question": "How does the CORNER lighting function work on the Virtus, and what are all the conditions that must be met for it to activate?",
+      "expected_answer": "The CORNER function illuminates the area in front of the vehicle depending on the direction of travel, intended for turning or manoeuvring such as when parking. All four of the following conditions must be met simultaneously for it to activate: 1. The turn signal is switched on OR the front wheels are turned sharply. 2. Low beam is switched on. 3. The front fog lights are NOT switched on. 4. The driving speed is below 40 km/h.",
+      "category": "features"
+    },
+    {
+      "id": 12,
+      "question": "What is the difference between version 1 and version 2 of the COMING HOME and LEAVING HOME lighting functions on the Virtus?",
+      "expected_answer": "Version 1 applies to vehicles with the automatic driving light switch function. The COMING HOME function turns on the light automatically after the ignition is switched off and the driver's door is opened, switching off after the configured lighting time elapses. The LEAVING HOME function switches on the light automatically when the vehicle is unlocked with the remote control. Version 2 applies to vehicles without the automatic driving light switch function. The COMING HOME function requires the function to be manually activated before it works (ignition off + manual activation + door opened = lights on for several seconds). The LEAVING HOME behaviour is the same as Version 1.",
+      "category": "features"
+    },
+    {
+      "id": 13,
+      "question": "What causes the Virtus hazard warning lights to switch on automatically, and how are they automatically switched off?",
+      "expected_answer": "The hazard warning lights can switch on automatically during hard braking. They are then automatically switched off again when the vehicle starts up or accelerates. When the hazard warning system is active and the turn signal is simultaneously switched on, the hazard warning lights will be temporarily switched off, and only the turn signal on the relevant side will flash.",
+      "category": "safety"
+    },
+    {
+      "id": 14,
+      "question": "What happens when the Virtus detects a defective driving light, and what does 'emergency mode' entail?",
+      "expected_answer": "If a message indicating a driving lights failure appears, the affected light switches to emergency mode. The driver may continue driving but must exercise appropriate caution. The recommended action is to seek assistance from a specialist garage as soon as possible.",
+      "category": "maintenance"
+    },
+    {
+      "id": 15,
+      "question": "What are all the conditions for the automatic low-beam activation feature on the Virtus, and how is the feature controlled?",
+      "expected_answer": "There are two automatic low-beam activation triggers: 1. Low light detection: The light switch must be in the 'auto' position. When ambient light is low, the low beam switches on automatically; it switches off when lighting conditions improve. 2. Rain detection: The light switch must be in the 'auto' position, the function must be activated, and the windscreen wipers must have been switched on for longer than 30 seconds. The feature is configured in the Infotainment system (10\" system: Car > Lights settings). Automatic activation is indicated by the illumination of the auto symbol in the light switch.",
+      "category": "features"
+    },
+    {
+      "id": 16,
+      "question": "What steps should be followed to check and top up the engine oil in the Virtus, and where are the relevant components located in the engine compartment?",
+      "expected_answer": "The engine oil dipstick and the engine oil filler opening are both located in the engine compartment. The dipstick is used to check the current oil level, while the filler opening is used to add oil. The engine compartment also contains the coolant expansion reservoir, brake fluid reservoir, 12-volt vehicle battery, fuse box, and windscreen washer fluid reservoir.",
+      "category": "maintenance"
+    },
+    {
+      "id": 17,
+      "question": "Under what circumstances will the engine oil level warning light illuminate vs. when does a different symbol appear for the same system?",
+      "expected_answer": "There are two distinct engine oil warning conditions: 1. 'Engine oil pressure too low' — a specific warning symbol illuminates. 2. 'Engine oil level too low' — a different warning symbol illuminates. Additionally, there is a symbol that lights up when the engine oil level is too HIGH or when the engine oil level sensor itself is faulty. These are three distinct warning states for the oil system.",
+      "category": "maintenance"
+    },
+    {
+      "id": 18,
+      "question": "What is the function of the turn signal convenience signalling feature, how is it activated, and how can it be stopped early or disabled entirely?",
+      "expected_answer": "Convenience signalling causes the turn signal lights to flash exactly three times without having to hold the control lever in position. It is activated by tapping the control lever briefly up or down (rather than moving it to a latched position). To stop the flashing early before the three flashes complete, tap the lever in the opposite direction. To permanently deactivate or reactivate the convenience signalling function, it is configured in the Infotainment system (10\" system: Car > Lights settings).",
+      "category": "features"
+    },
+    {
+      "id": 19,
+      "question": "What warning light behaviour indicates a faulty power steering system versus a faulty or unlocked steering column lock on the Virtus?",
+      "expected_answer": "For power steering: a specific symbol lights up continuously to indicate it is faulty. For the steering column lock: a different symbol flashes if the steering column lock is faulty, and a separate symbol flashes if the steering column lock has not been unlocked/released. This means steady illumination points to power steering, while flashing indicates a steering column lock issue.",
+      "category": "safety"
+    },
+    {
+      "id": 20,
+      "question": "What are the recommended headlight range adjustment positions for different vehicle load configurations in the Virtus?",
+      "expected_answer": "The headlight range control must be adjusted based on the vehicle's load status to avoid dazzling other road users or having poor road illumination. The four configurations are: Position 0 — front seats occupied, boot empty; Position 1 — all seats occupied, boot empty; Position 2 — all seats occupied, boot loaded; Position 3 — driver's seat occupied, boot loaded. Incorrect adjustment risks either poor vehicle lighting or dazzling oncoming traffic.",
+      "category": "safety"
     }
   ],
-  "notes": "Test questions based on the NEXA Grand Vitara Petrol Manual. Add more questions as needed."
+  "notes": "Test questions based on the Volkswagen Virtus Owner's Manual (data/raw/virtus-user-manual.pdf). Questions are designed to be complex and multi-part, requiring the RAG system to synthesize information from multiple sections of the document. Categories: specifications, security, features, maintenance, safety."
 }
