@@ -39,6 +39,10 @@ storage/cache/*
 .ipynb_checkpoints/
 *.ipynb_checkpoints
 
+lib/
+
 .pytest_cache/
 .coverage
 htmlcov/
+*.html
+*.png

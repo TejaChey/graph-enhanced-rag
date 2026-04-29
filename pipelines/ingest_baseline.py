@@ -11,42 +11,48 @@ from src.graph import EntityExtractor, KnowledgeGraph
 from src.retrieval import BaseRetriever
 
 
-def prompt_data_dir():
-    available = sorted(
-        p for p in settings.RAW_DATA_DIR.iterdir() if p.is_dir()
-    )
+def resolve_data_dir(data_dir_arg: str | None) -> Path:
+    """
+    Resolve the ingestion data directory from a CLI argument.
 
-    print("\nAvailable subdirectories in data/raw:")
-    if available:
-        for d in available:
-            print(f"  - {d.name}")
-    else:
-        print("  (none — will load all files directly in data/raw)")
+    Accepts:
+      - an absolute path
+      - a subdirectory name relative to data/raw/  (e.g. 'sample')
+      - None → defaults to data/raw/sample if it exists, else data/raw/
+    """
+    if data_dir_arg is None:
+        # Default: prefer data/raw/sample
+        default = settings.RAW_DATA_DIR / "sample"
+        return default if default.exists() else settings.RAW_DATA_DIR
 
-    answer = input(
-        "\nEnter subdirectory name to ingest, or press Enter to load all of data/raw: "
-    ).strip()
-
-    if not answer:
-        return settings.RAW_DATA_DIR
-
-    data_dir = (
-        Path(answer)
-        if Path(answer).is_absolute()
-        else settings.RAW_DATA_DIR / answer
-    )
-    if not data_dir.exists():
-        print(f"ERROR: '{data_dir}' does not exist.")
+    candidate = Path(data_dir_arg)
+    if not candidate.is_absolute():
+        candidate = settings.RAW_DATA_DIR / data_dir_arg
+    if not candidate.exists():
+        print(f"ERROR: '{candidate}' does not exist.")
         sys.exit(1)
-    return data_dir
+    return candidate
 
 
 def main():
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Ingest documents into Baseline RAG + Knowledge Graph")
+    parser.add_argument(
+        "--data-dir", "-d",
+        default=None,
+        help=(
+            "Directory (or subdirectory name under data/raw/) to ingest. "
+            "Defaults to data/raw/sample if it exists, otherwise data/raw/."
+        ),
+    )
+    args = parser.parse_args()
+
     print("\nStarting Baseline RAG Ingestion Pipeline")
     print("-" * 40)
 
     setup_directories()
-    data_dir = prompt_data_dir()
+    data_dir = resolve_data_dir(args.data_dir)
     print(f"Data directory: {data_dir}")
     print(f"Vector store directory: {settings.VECTORSTORE_DIR}")
 
