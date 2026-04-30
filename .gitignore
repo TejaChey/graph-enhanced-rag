@@ -46,3 +46,8 @@ lib/
 htmlcov/
 *.html
 *.png
+
+*.pdf
+*.tex
+*.docx
+*.~lock.*

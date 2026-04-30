@@ -2,11 +2,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder, PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 
-# --- Previous model: HuggingFace Inference Provider (paid quota, Together.ai router) ---
-# from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
-
-# --- Current model: local HuggingFace pipeline (free, no API credits needed) ---
-from langchain_huggingface import HuggingFacePipeline
+from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint, HuggingFacePipeline
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, pipeline
 
 from config import settings
@@ -14,44 +10,52 @@ from src.utils import format_docs
 
 
 class LLMGenerator:
-    def __init__(self, model_name=None, temperature=None):
-        self.model_name = model_name or settings.HF_MODEL_NAME
+    def __init__(self, model_name=None, temperature=None, use_local=False):
+        self.use_local = use_local
+        if self.use_local:
+            self.model_name = model_name or "google/flan-t5-base"
+        else:
+            self.model_name = model_name or settings.HF_MODEL_NAME
         self.temperature = temperature if temperature is not None else settings.LLM_TEMPERATURE
         self._llm = None
 
     def get_llm(self):
         if self._llm is None:
-            # --- Previous: paid Inference Provider endpoint ---
-            # endpoint = HuggingFaceEndpoint(
-            #     model=self.model_name,          # e.g. "Qwen/Qwen2.5-7B-Instruct"
-            #     temperature=self.temperature,
-            #     max_new_tokens=settings.LLM_MAX_TOKENS,
-            # )
-            # self._llm = ChatHuggingFace(llm=endpoint)
-
-            # --- Current: local pipeline (google/flan-t5-base) ---
-            model_name = "google/flan-t5-base"
-            tokenizer = AutoTokenizer.from_pretrained(model_name)
-            model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
-            pipe = pipeline(
-                "text2text-generation",
-                model=model,
-                tokenizer=tokenizer,
-                max_new_tokens=settings.LLM_MAX_TOKENS,
-            )
-            self._llm = HuggingFacePipeline(pipeline=pipe)
+            if self.use_local:
+                tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+                model = AutoModelForSeq2SeqLM.from_pretrained(self.model_name)
+                pipe = pipeline(
+                    "text2text-generation",
+                    model=model,
+                    tokenizer=tokenizer,
+                    max_new_tokens=settings.LLM_MAX_TOKENS,
+                )
+                self._llm = HuggingFacePipeline(pipeline=pipe)
+            else:
+                endpoint = HuggingFaceEndpoint(
+                    model=self.model_name,
+                    temperature=self.temperature,
+                    max_new_tokens=settings.LLM_MAX_TOKENS,
+                )
+                self._llm = ChatHuggingFace(llm=endpoint)
         return self._llm
 
     def build_rag_chain(self, retriever, prompt_template=None):
-        template = prompt_template or (
-            "Answer the following question using ONLY the context below.\n"
-            "If the answer is not in the context, say you don't know.\n\n"
-            "Context:\n{context}\n\n"
-            "Question: {input}\n\n"
-            "Answer:"
+        system_prompt = prompt_template or (
+            "You are a helpful assistant answering questions about documentation. "
+            "Use the following retrieved context to answer the question. "
+            "If you don't know the answer based on the context, say so — don't make it up.\n\n"
+            "Context:\n{context}"
         )
 
-        prompt = PromptTemplate(input_variables=["context", "input"], template=template)
+        if self.use_local:
+            template = system_prompt + "\n\nQuestion: {input}\n\nAnswer:"
+            prompt = PromptTemplate(input_variables=["context", "input"], template=template)
+        else:
+            prompt = ChatPromptTemplate.from_messages([
+                ("system", system_prompt),
+                ("human", "{input}"),
+            ])
 
         return (
             RunnablePassthrough.assign(
@@ -94,15 +98,19 @@ class LLMGenerator:
         )
 
     def generate_answer(self, query, context_docs, prompt_template=None):
-        template = prompt_template or (
-            "Answer the following question using ONLY the context below.\n"
-            "If the answer is not in the context, say you don't know.\n\n"
-            "Context:\n{context}\n\n"
-            "Question: {input}\n\n"
-            "Answer:"
+        system = prompt_template or (
+            "You are a helpful assistant answering questions about documentation. "
+            "Use the context below to answer. If unsure, say so.\n\nContext:\n{context}"
         )
 
-        prompt = PromptTemplate(input_variables=["context", "input"], template=template)
+        if self.use_local:
+            template = system + "\n\nQuestion: {input}\n\nAnswer:"
+            prompt = PromptTemplate(input_variables=["context", "input"], template=template)
+        else:
+            prompt = ChatPromptTemplate.from_messages([
+                ("system", system),
+                ("human", "{input}"),
+            ])
         chain = prompt | self.get_llm() | StrOutputParser()
         return chain.invoke({
             "context": format_docs(context_docs),
@@ -110,6 +118,9 @@ class LLMGenerator:
         }).strip()
 
     def generate_simple(self, prompt_text):
-        prompt = PromptTemplate(input_variables=["input"], template="{input}")
-        chain = prompt | self.get_llm() | StrOutputParser()
+        if self.use_local:
+            prompt = PromptTemplate(input_variables=["input"], template="{input}")
+            chain = prompt | self.get_llm() | StrOutputParser()
+        else:
+            chain = ChatPromptTemplate.from_template("{input}") | self.get_llm() | StrOutputParser()
         return chain.invoke({"input": prompt_text})

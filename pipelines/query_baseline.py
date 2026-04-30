@@ -10,13 +10,13 @@ from src.generation import LLMGenerator
 from src.retrieval import BaseRetriever
 
 
-def build_rag(top_k=None):
+def build_rag(top_k=None, use_local=False):
     embedding_model = EmbeddingModel()
     retriever = BaseRetriever(embedding_model=embedding_model, top_k=top_k)
     retriever.load_vectorstore()
     lc_retriever = retriever.as_retriever()
 
-    generator = LLMGenerator()
+    generator = LLMGenerator(use_local=use_local)
     chain = generator.build_rag_chain(lc_retriever)
     return chain
 
@@ -26,8 +26,8 @@ def query_rag(question, chain):
     return result["answer"]
 
 
-def interactive_mode():
-    chain = build_rag()
+def interactive_mode(use_local=False):
+    chain = build_rag(use_local=use_local)
 
     while True:
         question = input("Question: ").strip()
@@ -45,8 +45,8 @@ def interactive_mode():
             print(f"Error: {e}\n")
 
 
-def single_query_mode(question):
-    chain = build_rag()
+def single_query_mode(question, use_local=False):
+    chain = build_rag(use_local=use_local)
     answer = query_rag(question, chain)
     print(f"\nQuestion: {question}")
     print(f"Answer: {answer}")
@@ -60,12 +60,17 @@ def main():
         "--question", "-q",
         help="Single question to answer (omit to enter interactive mode)",
     )
+    parser.add_argument(
+        "--local",
+        action="store_true",
+        help="Use local CPU model instead of the HuggingFace API",
+    )
     args = parser.parse_args()
 
     if args.question:
-        single_query_mode(args.question)
+        single_query_mode(args.question, use_local=args.local)
     else:
-        interactive_mode()
+        interactive_mode(use_local=args.local)
 
 
 if __name__ == "__main__":

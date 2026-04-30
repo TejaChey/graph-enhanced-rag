@@ -24,7 +24,7 @@ GRAPH_RAG_SYSTEM_PROMPT = (
 )
 
 
-def build_graph_rag(top_k=None):
+def build_graph_rag(top_k=None, use_local=False):
     # Vector retriever (ChromaDB)
     embedding_model = EmbeddingModel()
     base_retriever = BaseRetriever(embedding_model=embedding_model, top_k=top_k)
@@ -33,7 +33,7 @@ def build_graph_rag(top_k=None):
     # Graph retriever (NetworkX knowledge graph)
     graph_retriever = GraphRetriever()
 
-    generator = LLMGenerator()
+    generator = LLMGenerator(use_local=use_local)
     return base_retriever, graph_retriever, generator
 
 
@@ -65,13 +65,13 @@ def query_graph_rag(question: str, base_retriever, graph_retriever, generator) -
     }
 
 
-def interactive_mode():
+def interactive_mode(use_local=False):
     graph_path = settings.GRAPH_DIR / "knowledge_graph.graphml"
     if not graph_path.exists():
         print("Knowledge graph not found. Run 'python pipelines/ingest_baseline.py' first.")
         sys.exit(1)
 
-    base_retriever, graph_retriever, generator = build_graph_rag()
+    base_retriever, graph_retriever, generator = build_graph_rag(use_local=use_local)
 
     while True:
         question = input("Question: ").strip()
@@ -89,13 +89,13 @@ def interactive_mode():
             print(f"Error: {e}\n")
 
 
-def single_query_mode(question: str):
+def single_query_mode(question: str, use_local=False):
     graph_path = settings.GRAPH_DIR / "knowledge_graph.graphml"
     if not graph_path.exists():
         print("Knowledge graph not found. Run ingest_baseline.py first.")
         sys.exit(1)
 
-    base_retriever, graph_retriever, generator = build_graph_rag()
+    base_retriever, graph_retriever, generator = build_graph_rag(use_local=use_local)
     result = query_graph_rag(question, base_retriever, graph_retriever, generator)
     print(f"\nQuestion: {question}")
     print(f"Answer: {result['answer']}")
@@ -109,12 +109,17 @@ def main():
         "--question", "-q",
         help="Single question to answer (omit for interactive mode)",
     )
+    parser.add_argument(
+        "--local",
+        action="store_true",
+        help="Use local CPU model instead of the HuggingFace API",
+    )
     args = parser.parse_args()
 
     if args.question:
-        single_query_mode(args.question)
+        single_query_mode(args.question, use_local=args.local)
     else:
-        interactive_mode()
+        interactive_mode(use_local=args.local)
 
 
 if __name__ == "__main__":
