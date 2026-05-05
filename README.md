@@ -13,7 +13,7 @@ Two RAG pipelines are available, both backed by the same ingested data:
 
 ### Graph-Enhanced Pipeline (in detail)
 
-```
+```text
 Query
   │
   ├─► Vector Store (ChromaDB)   →  top-k semantically similar passages
@@ -23,7 +23,7 @@ Query
         └► entity lookup → typed relationships
                e.g. 'NumPy' --[uses]--> Python
 
-Both contexts fed into a combined prompt → LLM (Qwen2.5-7B-Instruct) → Answer
+Both contexts fed into a combined prompt → LLM (API or Local) → Answer
 ```
 
 ### Knowledge Graph Construction
@@ -37,12 +37,15 @@ During ingestion, each document chunk is processed by:
 
 ## Project Structure
 
-```
+```text
 graph-enhanced-rag/
 ├── pipelines/
 │   ├── ingest.py            # Ingestion: loads docs, chunks, embeds + builds knowledge graph
-│   ├── query_vector.py      # Vector-only RAG (interactive & single-query)
+│   ├── query_baseline.py    # Vector-only RAG (interactive & single-query)
 │   └── query_graph_rag.py   # Graph-Enhanced RAG (interactive & single-query)
+│
+├── scripts/
+│   └── visualize_graph.py   # Generates an interactive HTML visualization of the graph
 │
 ├── src/
 │   ├── data_processing/     # DocumentLoader, TextCleaner, DocumentChunker
@@ -55,18 +58,17 @@ graph-enhanced-rag/
 │   │   ├── base_retriever.py   # ChromaDB similarity search
 │   │   └── graph_retriever.py  # Entity lookup over the knowledge graph
 │   ├── generation/
-│   │   └── llm.py              # LLMGenerator wrapping HuggingFace Inference Endpoint
+│   │   └── llm.py              # LLMGenerator (Supports HuggingFace API and Local CPU models)
 │   └── utils/
 │
-├── evaluation/
-│   ├── evaluator.py         # RAGEvaluator — benchmarks retrieval speed & accuracy
-│   └── test_questions.json  # 20 complex test questions with expected answers
+├── tests/
+│   └── ...                  # Pytest suite and quick tests
 │
 ├── config/
 │   └── settings.py          # All configuration (paths, models, chunk sizes, etc.)
 │
-├── data/
-│   └── raw/                 # Place your source documents here
+├── data/                    # Place your source documents here
+│   └── sample/              # Example documentation
 │
 ├── storage/
 │   ├── vectorstore/         # Persisted ChromaDB vector store
@@ -82,7 +84,7 @@ graph-enhanced-rag/
 ### 1. Clone & create a virtual environment
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/vinayak-ktp/graph-enhanced-rag.git
 cd graph-enhanced-rag
 
 python -m venv venv
@@ -93,7 +95,6 @@ source venv/bin/activate        # Windows: venv\Scripts\activate
 
 ```bash
 pip install -r requirements.txt
-python -m spacy download en_core_web_sm
 ```
 
 ### 3. Configure environment
@@ -104,7 +105,10 @@ Create a `.env` file in the project root:
 HUGGINGFACEHUB_API_TOKEN=hf_your_token_here
 ```
 
-The LLM is served via the **HuggingFace Inference API** (model: `Qwen/Qwen2.5-7B-Instruct`). A free or Pro HF account with API access is required.
+**LLM Models:**
+The project supports two modes for text generation:
+1. **API Mode (Default)**: Served via the HuggingFace Inference API (model: `Qwen/Qwen2.5-7B-Instruct`). A free or Pro HF account with API access is required.
+2. **Local Mode**: Uses a CPU-friendly local model (`google/flan-t5-base`). This does not require API credits but will download ~990MB of weights on first run. Triggered using the `--local` flag.
 
 All other settings (chunk size, embedding model, top-k, etc.) are in [`config/settings.py`](config/settings.py) and can also be overridden via `.env`.
 
@@ -114,7 +118,7 @@ All other settings (chunk size, embedding model, top-k, etc.) are in [`config/se
 
 ### 1. Ingest your documents
 
-Place your files (PDF, Markdown, TXT) in `data/` (subdirectories are supported), then run:
+Place your files (PDF, Markdown, TXT) in `data/` (subdirectories like `data/sample/` are supported), then run:
 
 ```bash
 python -m pipelines.ingest
@@ -123,19 +127,28 @@ python -m pipelines.ingest
 This will:
 - Load and clean all documents
 - Chunk them (default: 1000 tokens, 200 overlap)
-- Embed chunks into the ChromaDB vector store
+- Embed chunks into the ChromaDB vector store (downloads `all-MiniLM-L6-v2` locally on first run)
 - Extract entities and relationships → build and save the knowledge graph
 
-### 2. Query
+### 2. Visualize the Graph
+
+Generate a fully interactive HTML visualization of your constructed knowledge graph:
+
+```bash
+python scripts/visualize_graph.py
+```
+This will open `knowledge_graph_viz.html` in your browser.
+
+### 3. Query
 
 **Vector RAG** (semantic search only):
 
 ```bash
 # Interactive mode
-python -m pipelines.query_vector
+python -m pipelines.query_baseline
 
 # Single question
-python -m pipelines.query_vector -q "What is the recommended tire pressure?"
+python -m pipelines.query_baseline -q "What is the recommended tire pressure?"
 ```
 
 **Graph-Enhanced RAG** (semantic + knowledge graph):
@@ -148,10 +161,10 @@ python -m pipelines.query_graph_rag
 python -m pipelines.query_graph_rag -q "What does NumPy use internally?"
 ```
 
-Both modes output:
-```
-Question: <your question>
-Answer: <LLM response>
+**Local CPU Mode**:
+Append `--local` to any query command to run entirely offline without API calls:
+```bash
+python -m pipelines.query_graph_rag --local
 ```
 
 ---

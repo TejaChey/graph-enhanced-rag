@@ -68,7 +68,7 @@ def query_graph_rag(question: str, base_retriever, graph_retriever, generator) -
 def interactive_mode(use_local=False):
     graph_path = settings.GRAPH_DIR / "knowledge_graph.graphml"
     if not graph_path.exists():
-        print("Knowledge graph not found. Run 'python pipelines/ingest_baseline.py' first.")
+        print("Knowledge graph not found. Run 'python pipelines/ingest.py' first.")
         sys.exit(1)
 
     base_retriever, graph_retriever, generator = build_graph_rag(use_local=use_local)
@@ -92,7 +92,7 @@ def interactive_mode(use_local=False):
 def single_query_mode(question: str, use_local=False):
     graph_path = settings.GRAPH_DIR / "knowledge_graph.graphml"
     if not graph_path.exists():
-        print("Knowledge graph not found. Run ingest_baseline.py first.")
+        print("Knowledge graph not found. Run ingest.py first.")
         sys.exit(1)
 
     base_retriever, graph_retriever, generator = build_graph_rag(use_local=use_local)

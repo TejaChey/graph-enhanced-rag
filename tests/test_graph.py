@@ -73,7 +73,7 @@ def test_saved_production_graph():
 
     graph_path = settings.GRAPH_DIR / "knowledge_graph.graphml"
     if not graph_path.exists():
-        print("  SKIP — No production graph found. Run ingest_baseline.py first.")
+        print("  SKIP — No production graph found. Run ingest.py first.")
         return
 
     kg = KnowledgeGraph()
