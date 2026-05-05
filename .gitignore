@@ -23,15 +23,13 @@ build/
 *.swo
 *.un~
 
-data/raw/*
-data/processed/*
+data/*
 storage/vectorstore/*
 storage/graph/*
 storage/cache/*
 
-!data/raw/sample/
-!data/raw/.gitkeep
-!data/processed/.gitkeep
+!data/sample/
+!data/.gitkeep
 !storage/vectorstore/.gitkeep
 !storage/graph/.gitkeep
 !storage/cache/.gitkeep

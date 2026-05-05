@@ -4,7 +4,6 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from config import settings
 from src.embeddings import EmbeddingModel
 from src.generation import LLMGenerator
 from src.retrieval import BaseRetriever

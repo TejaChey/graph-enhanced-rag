@@ -1,4 +1,4 @@
-from config import settings, setup_directories
+from config import setup_directories
 from src.data_processing import DocumentChunker, DocumentLoader, TextCleaner
 
 
@@ -16,9 +16,8 @@ def test_loader():
         print(f"First doc preview: {docs[0].page_content[:100]}...")
         print(f"Metadata keys: {list(docs[0].metadata.keys())}")
     else:
-        print("No documents found. Add files to data/raw/")
-
-    return docs
+        print("No documents found. Add files to data/")
+        return docs
 
 
 def test_cleaner(documents):
@@ -75,7 +74,6 @@ def test_chunker(documents):
 
 
 def main():
-    """Run all data processing tests"""
     print("\n" + "="*60)
     print("DATA PROCESSING TESTS")
     print("="*60)

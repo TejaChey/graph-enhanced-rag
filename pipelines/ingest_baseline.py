@@ -12,22 +12,14 @@ from src.retrieval import BaseRetriever
 
 
 def resolve_data_dir(data_dir_arg: str | None) -> Path:
-    """
-    Resolve the ingestion data directory from a CLI argument.
-
-    Accepts:
-      - an absolute path
-      - a subdirectory name relative to data/raw/  (e.g. 'sample')
-      - None → defaults to data/raw/sample if it exists, else data/raw/
-    """
     if data_dir_arg is None:
-        # Default: prefer data/raw/sample
-        default = settings.RAW_DATA_DIR / "sample"
-        return default if default.exists() else settings.RAW_DATA_DIR
+        # Default: prefer data/sample
+        default = settings.DATA_DIR / "sample"
+        return default if default.exists() else settings.DATA_DIR
 
     candidate = Path(data_dir_arg)
     if not candidate.is_absolute():
-        candidate = settings.RAW_DATA_DIR / data_dir_arg
+        candidate = settings.DATA_DIR / data_dir_arg
     if not candidate.exists():
         print(f"ERROR: '{candidate}' does not exist.")
         sys.exit(1)
@@ -42,8 +34,8 @@ def main():
         "--data-dir", "-d",
         default=None,
         help=(
-            "Directory (or subdirectory name under data/raw/) to ingest. "
-            "Defaults to data/raw/sample if it exists, otherwise data/raw/."
+            "Directory (or subdirectory name under data/) to ingest. "
+            "Defaults to data/sample if it exists, otherwise data/."
         ),
     )
     args = parser.parse_args()
@@ -62,7 +54,7 @@ def main():
     print(f"  Loaded {len(documents)} documents")
 
     if not documents:
-        print("  No documents found. Add files to data/raw/")
+        print("  No documents found. Add files to data/")
         return
 
     print("\nCleaning documents...")

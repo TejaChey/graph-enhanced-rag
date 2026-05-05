@@ -1,4 +1,3 @@
-from pathlib import Path
 
 from langchain_community.document_loaders import (
     DirectoryLoader,
@@ -12,7 +11,7 @@ from config import settings
 
 class DocumentLoader:
     def __init__(self, data_dir=None):
-        self.data_dir = data_dir or settings.RAW_DATA_DIR
+        self.data_dir = data_dir or settings.DATA_DIR
 
     def load_markdown_files(self):
         loader = DirectoryLoader(

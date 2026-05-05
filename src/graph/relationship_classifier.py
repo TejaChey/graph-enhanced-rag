@@ -25,15 +25,7 @@ _RELATIONSHIP_PATTERNS: list[tuple[str, list[str]]] = [
 _DEFAULT_RELATIONSHIP = "related_to"
 
 
-def classify_relationship(entity_a: str, entity_b: str, context: str) -> str:
-    """
-    Rule-based relationship classification between two entities.
-
-    Looks for keyword patterns in the chunk of text (context) where
-    both entities appear together.
-
-    Returns one of: uses | part_of | extends | implements | depends_on | related_to
-    """
+def classify_relationship(context: str) -> str:
     text = context.lower()
     for rel_type, patterns in _RELATIONSHIP_PATTERNS:
         for pattern in patterns:
@@ -46,17 +38,12 @@ def classify_pairs(
     entities: list[tuple[str, str]],
     context: str,
 ) -> list[tuple[str, str, str]]:
-    """
-    Classify the relationship for every pair of entities in a chunk.
-
-    Returns a list of (entity_a, entity_b, relationship_type) triples.
-    """
     triples = []
     for i in range(len(entities)):
         for j in range(i + 1, len(entities)):
             entity_a = entities[i][0]
             entity_b = entities[j][0]
-            rel = classify_relationship(entity_a, entity_b, context)
+            rel = classify_relationship(context)
             triples.append((entity_a, entity_b, rel))
     return triples
 

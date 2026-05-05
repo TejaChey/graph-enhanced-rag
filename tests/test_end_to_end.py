@@ -1,6 +1,6 @@
 import time
 
-from config import settings, setup_directories
+from config import setup_directories
 from src.data_processing import DocumentChunker, DocumentLoader, TextCleaner
 from src.embeddings import EmbeddingModel
 from src.generation import LLMGenerator
@@ -19,7 +19,7 @@ def test_ingestion_pipeline():
 
     if len(docs) == 0:
         print("\nERROR: No documents found!")
-        print("Please add documentation to data/raw/ first")
+        print("Please add documentation to data/ first")
         print("Run: bash scripts/download_docs.sh")
         return None, None
 
@@ -53,7 +53,7 @@ def test_ingestion_pipeline():
     return retriever, embedding_model
 
 
-def test_query_pipeline(retriever, embedding_model):
+def test_query_pipeline(retriever):
     print("\nSTEP 2: QUERY PIPELINE")
     print("-"*60)
 
@@ -139,7 +139,7 @@ def main():
         return
 
     # Test querying
-    test_query_pipeline(retriever, embedding_model)
+    test_query_pipeline(retriever)
 
     # Test retrieval quality
     test_retrieval_quality(retriever)

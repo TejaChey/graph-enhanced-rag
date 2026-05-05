@@ -1,7 +1,5 @@
 import json
-from pathlib import Path
 
-from langchain_core.documents import Document
 
 
 def count_files_in_directory(directory, extension="*"):

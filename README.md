@@ -114,7 +114,7 @@ All other settings (chunk size, embedding model, top-k, etc.) are in [`config/se
 
 ### 1. Ingest your documents
 
-Place your files (PDF, Markdown, TXT) in `data/raw/` (subdirectories are supported), then run:
+Place your files (PDF, Markdown, TXT) in `data/` (subdirectories are supported), then run:
 
 ```bash
 python -m pipelines.ingest

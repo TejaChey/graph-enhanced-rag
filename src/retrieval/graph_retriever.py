@@ -6,18 +6,6 @@ from src.graph.knowledge_graph import KnowledgeGraph
 
 
 class GraphRetriever:
-    """
-    Retrieves graph-based context for a query using SpaCy NER.
-
-    Instead of naively splitting the query by spaces (which breaks
-    multi-word entities like "Travis Oliphant"), it runs the same
-    SpaCy NER pipeline on the query to extract proper entity mentions,
-    then matches them against the knowledge graph nodes.
-
-    Returns context in the form:
-        "'NumPy' --[uses]--> Python, arrays"
-        "'NumPy' --[depends_on]--> C extensions"
-    """
 
     def __init__(self, graph_dir=None, model_name=None):
         self.kg = KnowledgeGraph(graph_dir=graph_dir)
@@ -42,10 +30,6 @@ class GraphRetriever:
         return self._nlp
 
     def _extract_query_entities(self, query: str) -> list[str]:
-        """
-        Use SpaCy NER to extract entity mentions from the query.
-        Falls back to individual words if no entities are found.
-        """
         nlp = self._load_nlp()
         doc = nlp(query)
         entities = [ent.text.strip() for ent in doc.ents]
@@ -59,20 +43,12 @@ class GraphRetriever:
         return entities
 
     def _find_graph_node(self, mention: str) -> str | None:
-        """Case-insensitive lookup of 'mention' in graph nodes."""
         return next(
             (n for n in self.kg.graph.nodes if n.lower() == mention.lower()),
             None,
         )
 
     def retrieve(self, query: str, top_k: int = 4) -> list[Document]:
-        """
-        Return up to top_k graph-context Documents for the given query.
-
-        Each Document describes one entity's typed relationships, e.g.:
-            "'NumPy' --[uses]--> Python
-             'NumPy' --[depends_on]--> C extensions"
-        """
         self._load_graph()
         query_entities = self._extract_query_entities(query)
         results = []

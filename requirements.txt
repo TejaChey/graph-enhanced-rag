@@ -12,10 +12,11 @@ chromadb
 faiss-cpu
 
 networkx
+pyvis
 # neo4j
 
 spacy
-# python -m spacy download en_core_web_sm
+python -m spacy download en_core_web_sm
 
 unstructured
 markdown

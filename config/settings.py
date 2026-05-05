@@ -10,8 +10,7 @@ class Settings(BaseSettings):
     # Project paths
     PROJECT_ROOT: Path = Path(__file__).resolve().parent.parent
     DATA_DIR: Path = PROJECT_ROOT / "data"
-    RAW_DATA_DIR: Path = DATA_DIR / "raw"
-    PROCESSED_DATA_DIR: Path = DATA_DIR / "processed"
+
     STORAGE_DIR: Path = PROJECT_ROOT / "storage"
     VECTORSTORE_DIR: Path = STORAGE_DIR / "vectorstore"
     GRAPH_DIR: Path = STORAGE_DIR / "graph"
@@ -60,8 +59,7 @@ settings = Settings()
 
 def setup_directories():
     directories = [
-        settings.RAW_DATA_DIR,
-        settings.PROCESSED_DATA_DIR,
+        settings.DATA_DIR,
         settings.VECTORSTORE_DIR,
         settings.GRAPH_DIR,
     ]

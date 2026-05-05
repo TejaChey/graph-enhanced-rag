@@ -4,12 +4,6 @@ from config import settings
 
 
 class EntityExtractor:
-    """
-    Extracts named entities from text chunks using SpaCy.
-
-    Each entity is a tuple of (entity_text, entity_label).
-    Only entity types defined in settings.ENTITY_TYPES are kept.
-    """
 
     def __init__(self, model_name=None, entity_types=None):
         self.model_name = model_name or settings.SPACY_MODEL
@@ -28,12 +22,6 @@ class EntityExtractor:
         return self._nlp
 
     def extract_entities(self, text: str) -> list[tuple[str, str]]:
-        """
-        Extract named entities from a single text string.
-
-        Returns a list of (entity_text, entity_label) tuples.
-        Duplicate (text, label) pairs within the same chunk are deduplicated.
-        """
         nlp = self._load_model()
         doc = nlp(text)
         seen = set()
@@ -47,22 +35,11 @@ class EntityExtractor:
         return entities
 
     def extract_entities_from_chunks(self, chunks) -> list[list[tuple[str, str]]]:
-        """
-        Extract entities from a list of LangChain Document chunks.
-
-        Returns a list (one per chunk) of entity lists.
-        """
         return [self.extract_entities(chunk.page_content) for chunk in chunks]
 
     def extract_entities_with_context(
         self, chunks
     ) -> list[tuple[list[tuple[str, str]], str]]:
-        """
-        Like extract_entities_from_chunks but also returns the raw chunk text
-        so the relationship classifier can look at it.
-
-        Returns a list of (entities, chunk_text) tuples.
-        """
         return [
             (self.extract_entities(chunk.page_content), chunk.page_content)
             for chunk in chunks

@@ -19,7 +19,7 @@ print("Loading documents...", end=" ")
 loader = DocumentLoader()
 docs = loader.load_all_documents()
 if not docs:
-    print("No documents found! Add files to data/raw/")
+    print("No documents found! Add files to data/")
     sys.exit(1)
 else:
     print(f"({len(docs)} docs)")
