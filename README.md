@@ -191,3 +191,6 @@ Key settings in `config/settings.py` (all overridable via `.env`):
 - Fork the repo and create a new branch for your changes
 - Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for commit messages
 - Open a pull request against `main`
+## Contributors
+- [Vinayak KTP](https://github.com/vinayak-ktp) — core architecture, knowledge graph design
+- [Teja Y](https://github.com/TejaChey) — PDF ingestion pipeline, RAG pipeline integration
